@@ -101,7 +101,7 @@ public struct RangeSelectorView: View {
         case .today:
             let cal = Calendar.current
             startDate = cal.startOfDay(for: now)
-            endDate = now
+            endDate = Calendar.current.date(byAdding: .day, value: 1, to: startDate) ?? now
         case .last7Days:
             startDate = Calendar.current.date(byAdding: .day, value: -7, to: now) ?? now
             endDate = now
