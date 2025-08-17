@@ -18,9 +18,6 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section("Search") {
-                    Toggle("Enable abbreviation search", isOn: binding(\.enableAbbreviationSearch))
-                }
                 Section("Checklist") {
                     Picker("Region checklist", selection: binding(\.selectedChecklistId)) {
                         Text("None (global)").tag(String?.none)

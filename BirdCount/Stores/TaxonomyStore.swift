@@ -6,8 +6,6 @@ import Observation
     private(set) var loaded: Bool = false
     private(set) var error: String? = nil // taxonomy load error only
     var checklistError: String? = nil // non-fatal checklist issues
-    var enableAbbreviationSearch: Bool = true
-
     private(set) var checklistSpeciesCommonness: [String:Int] = [:]
     private(set) var activeChecklistId: String? = nil
     private var lastChecklistIds: Set<String> = [] // for incremental updates
@@ -116,7 +114,7 @@ import Observation
     func search(_ text: String, minCommonness: Int? = nil, maxCommonness: Int? = nil) -> [Taxon] {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         let needle = trimmed.lowercased()
-        let isAbbr = enableAbbreviationSearch && !needle.isEmpty && needle.range(of: "^[a-zA-Z]+$", options: .regularExpression) != nil
+        let isAbbr = !needle.isEmpty && needle.range(of: "^[a-zA-Z]+$", options: .regularExpression) != nil
         return species.filter { taxon in
             if let minC = minCommonness, let maxC = maxCommonness, let c = taxon.commonness, (c < minC || c > maxC) { return false }
             if trimmed.isEmpty { return true }

@@ -10,7 +10,7 @@ import Observation
     private var initializing = true
 
     // User-adjustable settings with default values
-    var enableAbbreviationSearch: Bool = true { didSet { persistIfReady() } }
+
     var enableHaptics: Bool = true { didSet { persistIfReady() } }
     var darkModeOverride: DarkModeOverride = .system { didSet { persistIfReady() } }
     // Checklist related
@@ -22,7 +22,6 @@ import Observation
 
     init() {
         let defaults = UserDefaults.standard
-        if let v = defaults.object(forKey: Self.key("enableAbbreviationSearch")) as? Bool { enableAbbreviationSearch = v }
         if let v = defaults.object(forKey: Self.key("enableHaptics")) as? Bool { enableHaptics = v }
         if let raw = defaults.string(forKey: Self.key("darkModeOverride")), let m = DarkModeOverride(rawValue: raw) { darkModeOverride = m }
         if let raw = defaults.string(forKey: Self.key("selectedChecklistId")), !raw.isEmpty { selectedChecklistId = raw }
@@ -52,7 +51,6 @@ import Observation
     private func persistIfReady() { if !initializing { persist() } }
     private func persist() {
         let d = UserDefaults.standard
-        d.set(enableAbbreviationSearch, forKey: Self.key("enableAbbreviationSearch"))
         d.set(enableHaptics, forKey: Self.key("enableHaptics"))
         d.set(darkModeOverride.rawValue, forKey: Self.key("darkModeOverride"))
         d.set(selectedChecklistId ?? "", forKey: Self.key("selectedChecklistId"))

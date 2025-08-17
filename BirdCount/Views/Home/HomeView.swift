@@ -76,13 +76,10 @@ struct HomeView: View {
             // Hide the nav bar entirely so it doesn't reserve space at the top
             .toolbar(.hidden, for: .navigationBar)
             .toolbarBackground(.hidden, for: .navigationBar)
-            .onChange(of: settings.enableAbbreviationSearch) { _, newVal in
-                taxonomy.enableAbbreviationSearch = newVal
-            }
             .onChange(of: settings.selectedChecklistId) { _, newId in
                 if let id = newId { taxonomy.loadChecklist(id: id) }
             }
-            .task { taxonomy.enableAbbreviationSearch = settings.enableAbbreviationSearch; if let id = settings.selectedChecklistId { taxonomy.loadChecklist(id: id) } }
+            .task { if let id = settings.selectedChecklistId { taxonomy.loadChecklist(id: id) } }
             // Present CountAdjustSheet as a custom bottom overlay, shifted up by the bottom controls height
             .overlay(alignment: .bottom) {
                 if let taxon = selectedTaxon {
