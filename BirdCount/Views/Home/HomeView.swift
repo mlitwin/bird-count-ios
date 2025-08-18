@@ -143,11 +143,6 @@ struct HomeView: View {
                             SpeciesRow(taxon: taxon, count: count)
                                 .contentShape(Rectangle())
                                 .onTapGesture { selectedTaxon = taxon }
-                                .contextMenu {
-                                    if count > 0 {
-                                        Button(role: .destructive) { observations.reset(taxon.id) } label: { Label("Reset", systemImage: "trash") }
-                                    }
-                                }
                                 .padding(.horizontal)
                                 .padding(.vertical, 6)
                             Divider()
