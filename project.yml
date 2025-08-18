@@ -43,3 +43,28 @@ targets:
             echo "No taxonomy generation script found";
           fi
         basedOnDependencyAnalysis: false
+
+  BirdCountTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "18.5"
+    sources:
+      - path: Tests
+    dependencies:
+      - target: BirdCount
+    hostApplication:
+      target: BirdCount
+    settings:
+      GENERATE_INFOPLIST_FILE: YES
+      PRODUCT_BUNDLE_IDENTIFIER: com.birdcount.tests
+      CODE_SIGNING_ALLOWED: NO
+
+schemes:
+  BirdCount:
+    build:
+      targets:
+        BirdCount: all
+    test:
+      targets:
+        - name: BirdCountTests
+          parallelizable: true

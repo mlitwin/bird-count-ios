@@ -17,6 +17,7 @@
 		47FB6008BE8519B9F446ECED /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 783AD92EE988689DEFC27F00 /* SettingsView.swift */; };
 		594E347B44CB9AE16D14A93F /* ObservationLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCA969A738EAD7B00CC123B /* ObservationLogView.swift */; };
 		5B4143CF290C1B88ED929590 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DA21F8B7A04FA9A2B01542 /* HomeView.swift */; };
+		6219220B199141F94E4AF58A /* BirdCountTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905A41A6B9EC879EAD96F7CA /* BirdCountTests.swift */; };
 		68D2F644EA81B5C2380F5DB2 /* checklist-US-ME.json in Resources */ = {isa = PBXBuildFile; fileRef = 77B3EC72050A052361E92911 /* checklist-US-ME.json */; };
 		6C9CBAEA8E77832D8787CD76 /* SummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B0BA1474D059B40D0C1BEDC /* SummaryView.swift */; };
 		75089FF45C05EBC6944800A2 /* ObservationStoreCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D9C8368572CC7976F0E8145 /* ObservationStoreCache.swift */; };
@@ -32,6 +33,16 @@
 		F50783CF7870BE1FA0621CCD /* ObservationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11C0F2EB5F5DDCE1C6106B1 /* ObservationStore.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		FDA9EAC974DB1F1C7D0D512D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6B65AF1245C07E46D5190E1B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 83610DFEB2D4DA25A7719A11;
+			remoteInfo = BirdCount;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		102D036CF7E1F208793BECF3 /* TaxonomyStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxonomyStore.swift; sourceTree = "<group>"; };
 		1C2576ACDD95729987584994 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -44,6 +55,7 @@
 		74ADC22819086097B12402BC /* Taxon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Taxon.swift; sourceTree = "<group>"; };
 		77B3EC72050A052361E92911 /* checklist-US-ME.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "checklist-US-ME.json"; sourceTree = "<group>"; };
 		783AD92EE988689DEFC27F00 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		905A41A6B9EC879EAD96F7CA /* BirdCountTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirdCountTests.swift; sourceTree = "<group>"; };
 		9F3E57E196D1687022B624BA /* BirdCountApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirdCountApp.swift; sourceTree = "<group>"; };
 		A9DD5F1234EFBE186A162092 /* ios_taxonomy_min.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ios_taxonomy_min.json; sourceTree = "<group>"; };
 		AD12BB59D440BC995C372E0D /* checklist-US-CA-041.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "checklist-US-CA-041.json"; sourceTree = "<group>"; };
@@ -55,6 +67,7 @@
 		D22F7391BED2166E79AC0A46 /* RangeSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RangeSelectorView.swift; sourceTree = "<group>"; };
 		E1AE8BBD3313453070C1CF58 /* ShareActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareActivityView.swift; sourceTree = "<group>"; };
 		E3424E4DDD31730B25CEEBC1 /* generate_ios_taxonomy.mjs */ = {isa = PBXFileReference; path = generate_ios_taxonomy.mjs; sourceTree = "<group>"; };
+		E88A4BACD0DF593F50C9EF1D /* BirdCountTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BirdCountTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F11C0F2EB5F5DDCE1C6106B1 /* ObservationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationStore.swift; sourceTree = "<group>"; };
 		FBCE0B9078509DFFC117339F /* ObservationRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationRecordView.swift; sourceTree = "<group>"; };
 		FFA8094EBAC869E648D7F854 /* CountAdjustSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountAdjustSheet.swift; sourceTree = "<group>"; };
@@ -85,6 +98,7 @@
 			children = (
 				9B6D1315E951F29EB7E1E177 /* BirdCount */,
 				AD9AA4802F555D2EC055E9C5 /* data */,
+				F0D67BCB3839FEA896C7F00D /* Tests */,
 				593A6844D89FD614BB1D61E8 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -106,6 +120,7 @@
 			isa = PBXGroup;
 			children = (
 				4186A73E1CCA966174627C23 /* BirdCount.app */,
+				E88A4BACD0DF593F50C9EF1D /* BirdCountTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -188,6 +203,14 @@
 			path = Home;
 			sourceTree = "<group>";
 		};
+		F0D67BCB3839FEA896C7F00D /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				905A41A6B9EC879EAD96F7CA /* BirdCountTests.swift */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
 		F8D30DB1E6B90E66BCDF31DA /* BirdCount */ = {
 			isa = PBXGroup;
 			children = (
@@ -199,6 +222,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		0CF98F2D011BE7A13BD69261 /* BirdCountTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 43D78743668B146AEE290428 /* Build configuration list for PBXNativeTarget "BirdCountTests" */;
+			buildPhases = (
+				E49F76B12F1A802914A20F3C /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				222E9243F8C6B7A39AAAAA95 /* PBXTargetDependency */,
+			);
+			name = BirdCountTests;
+			packageProductDependencies = (
+			);
+			productName = BirdCountTests;
+			productReference = E88A4BACD0DF593F50C9EF1D /* BirdCountTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		83610DFEB2D4DA25A7719A11 /* BirdCount */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8C271E7F5BEA81D09EBD1323 /* Build configuration list for PBXNativeTarget "BirdCount" */;
@@ -241,6 +282,7 @@
 			projectRoot = "";
 			targets = (
 				83610DFEB2D4DA25A7719A11 /* BirdCount */,
+				0CF98F2D011BE7A13BD69261 /* BirdCountTests */,
 			);
 		};
 /* End PBXProject section */
@@ -286,7 +328,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E49F76B12F1A802914A20F3C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6219220B199141F94E4AF58A /* BirdCountTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		222E9243F8C6B7A39AAAAA95 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 83610DFEB2D4DA25A7719A11 /* BirdCount */;
+			targetProxy = FDA9EAC974DB1F1C7D0D512D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		06D83211D8FD4F06736B557D /* Debug */ = {
@@ -425,6 +483,44 @@
 			};
 			name = Release;
 		};
+		458AA221BC0AE7933EC7DF9C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.birdcount.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BirdCount.app/BirdCount";
+			};
+			name = Debug;
+		};
+		D9E9B0F6CAF55EFEE759E440 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.birdcount.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BirdCount.app/BirdCount";
+			};
+			name = Release;
+		};
 		EA1927F849D19A443F205B2B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -445,6 +541,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		43D78743668B146AEE290428 /* Build configuration list for PBXNativeTarget "BirdCountTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				458AA221BC0AE7933EC7DF9C /* Debug */,
+				D9E9B0F6CAF55EFEE759E440 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		8C271E7F5BEA81D09EBD1323 /* Build configuration list for PBXNativeTarget "BirdCount" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
