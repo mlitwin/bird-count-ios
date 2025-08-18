@@ -1,4 +1,4 @@
-.PHONY: help generate test list-dests simulators
+.PHONY: help generate test list-dests simulators core-test
 
 # Configurable variables
 SCHEME ?= BirdCount
@@ -14,6 +14,7 @@ help:
 	@echo "Targets:"
 	@echo "  generate   Regenerate Xcode project from project.yml using XcodeGen"
 	@echo "  test       Build and run unit tests on the iOS Simulator (\"$(SIMULATOR)\", OS=$(OS))"
+	@echo "  core-test  Build and run macOS unit tests for pure Swift logic (no Simulator)"
 	@echo "  list-dests Show valid destinations for the scheme (useful for -destination)"
 	@echo "  simulators List available Booted/Shutdown simulators via simctl"
 	@echo "Variables (override with VAR=value): SCHEME, PROJECT, SIMULATOR, DEST, CONFIGURATION"
@@ -40,3 +41,11 @@ list-dests:
 # Raw simctl list of available devices
 simulators:
 	@xcrun simctl list devices available
+
+# Build and run macOS-native core tests (fast, no simulator)
+core-test:
+	@xcodebuild \
+		-project "$(PROJECT)" \
+		-scheme "BirdCountCore" \
+		-configuration "$(CONFIGURATION)" \
+		test

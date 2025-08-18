@@ -59,6 +59,29 @@ targets:
       PRODUCT_BUNDLE_IDENTIFIER: com.birdcount.tests
       CODE_SIGNING_ALLOWED: NO
 
+  BirdCountCore:
+    type: framework
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: BirdCount/Models
+      - path: BirdCount/Stores
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.birdcount.core
+
+  BirdCountCoreTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: TestsCore
+    dependencies:
+      - target: BirdCountCore
+    settings:
+      GENERATE_INFOPLIST_FILE: YES
+      PRODUCT_BUNDLE_IDENTIFIER: com.birdcount.core.tests
+      CODE_SIGNING_ALLOWED: NO
+
 schemes:
   BirdCount:
     build:
@@ -67,4 +90,12 @@ schemes:
     test:
       targets:
         - name: BirdCountTests
+          parallelizable: true
+  BirdCountCore:
+    build:
+      targets:
+        BirdCountCore: all
+    test:
+      targets:
+        - name: BirdCountCoreTests
           parallelizable: true
