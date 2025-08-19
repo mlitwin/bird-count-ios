@@ -8,9 +8,15 @@ struct ObservationStoreCache {
 
     mutating func rebuild(from observations: [ObservationRecord]) {
         // Recompute counts map: species id -> sum of non-negative counts
-        counts = observations.reduce(into: [:]) { dict, record in
-            dict[record.taxonId, default: 0] += max(0, record.count)
+        // Includes counts from all nested children recursively.
+        counts = [:]
+        func accumulate(_ record: ObservationRecord) {
+            counts[record.taxonId, default: 0] += max(0, record.count)
+            if !record.children.isEmpty {
+                for child in record.children { accumulate(child) }
+            }
         }
+        for record in observations { accumulate(record) }
     }
 
     func count(for id: String) -> Int { counts[id] ?? 0 }

@@ -42,6 +42,46 @@ import Observation
     var totalIndividuals: Int { cache.totalIndividuals }
     var totalSpeciesObserved: Int { cache.totalSpeciesObserved }
 
+    /// Find an observation record by UUID, searching recursively through children.
+    func findRecord(by id: UUID) -> ObservationRecord? {
+        func search(in array: [ObservationRecord]) -> ObservationRecord? {
+            for rec in array {
+                if rec.id == id { return rec }
+                if let found = search(in: rec.children) { return found }
+            }
+            return nil
+        }
+        return search(in: observations)
+    }
+
+    /// Attach a child observation record to an existing record identified by `parentId`.
+    /// Returns true if the parent was found and the child added.
+    @discardableResult
+    func addChildObservation(parentId: UUID, taxonId: String, begin: Date = Date(), end: Date? = nil, count: Int = 1) -> Bool {
+        let newChild = ObservationRecord(id: UUID(), taxonId: taxonId, begin: begin, end: end, count: max(0, count))
+        var didAttach = false
+        func attach(into array: inout [ObservationRecord]) {
+            for idx in array.indices {
+                if array[idx].id == parentId {
+                    array[idx].addChild(newChild)
+                    didAttach = true
+                    return
+                }
+                // Recurse into children
+                attach(into: &array[idx].children)
+                if didAttach { return }
+            }
+        }
+        attach(into: &observations)
+        if didAttach {
+            touchRecent(taxonId)
+            // Mutating nested children does not trigger observations.didSet
+            persist()
+            rebuildDerived()
+        }
+        return didAttach
+    }
+
     // MARK: Recent handling
     private func touchRecent(_ id: String) {
         let now = Date()
