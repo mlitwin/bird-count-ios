@@ -14,21 +14,20 @@ struct ObservationRecordView: View {
                     .foregroundStyle(.secondary)
             }
             Spacer()
-            if record.count > 1 {
-                Text("×\(record.count)")
-                    .font(.subheadline.monospacedDigit())
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(Capsule().fill(Color.accentColor.opacity(0.12)))
-                    .overlay(Capsule().stroke(Color.accentColor.opacity(0.6), lineWidth: 1))
-                    .accessibilityLabel("Count \(record.count)")
-            }
+            // Always show count; use recursive total including children
+            Text("×\(totalCount)")
+                .font(.subheadline.monospacedDigit())
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(Capsule().fill(Color.accentColor.opacity(0.12)))
+                .overlay(Capsule().stroke(Color.accentColor.opacity(0.6), lineWidth: 1))
+                .accessibilityLabel("Count \(totalCount)")
         }
         .contentShape(Rectangle())
         .onTapGesture { showAdjust = true }
         .sheet(isPresented: $showAdjust) {
             if let taxon = taxon {
-                CountAdjustSheet(taxon: taxon) { showAdjust = false }
+                CountAdjustSheet(taxon: taxon, parentId: record.id) { showAdjust = false }
             } else {
                 // Fallback: dismiss if taxon not found
                 Color.clear.onAppear { showAdjust = false }
@@ -60,5 +59,11 @@ struct ObservationRecordView: View {
             let end = DateFormatter.localizedString(from: record.end, dateStyle: .medium, timeStyle: .short)
             return "\(name) from \(start) to \(end)"
         }
+    }
+
+    // MARK: - Totals
+    private var totalCount: Int { recursiveCount(record) }
+    private func recursiveCount(_ r: ObservationRecord) -> Int {
+        r.count + r.children.map { recursiveCount($0) }.reduce(0, +)
     }
 }

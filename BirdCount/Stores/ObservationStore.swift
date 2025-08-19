@@ -58,7 +58,7 @@ import Observation
     /// Returns true if the parent was found and the child added.
     @discardableResult
     func addChildObservation(parentId: UUID, taxonId: String, begin: Date = Date(), end: Date? = nil, count: Int = 1) -> Bool {
-        let newChild = ObservationRecord(id: UUID(), taxonId: taxonId, begin: begin, end: end, count: max(0, count))
+    let newChild = ObservationRecord(id: UUID(), taxonId: taxonId, begin: begin, end: end, count: count)
         var didAttach = false
         func attach(into array: inout [ObservationRecord]) {
             for idx in array.indices {

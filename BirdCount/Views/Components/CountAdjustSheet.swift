@@ -3,9 +3,11 @@ import SwiftUI
 struct CountAdjustSheet: View, Identifiable {
     @Environment(ObservationStore.self) private var observations
     let taxon: Taxon
+    // Optional parent record id; when present, new observations will be attached as children of this parent
+    var parentId: UUID? = nil
     let onDone: () -> Void
     var id: String { taxon.id }
-    @State private var tempCount: Int = 1 // number of new observations to add
+    @State private var tempCount: Int = 1 // desired total count when adjusting existing record
     // Numeric keypad removed; simple +/- controls only
 
     var body: some View {
@@ -27,18 +29,35 @@ struct CountAdjustSheet: View, Identifiable {
     }
 
     private func initialize() {
-    // Always default to 1 new observation regardless of existing total
-    tempCount = 1
+        // If we're adjusting from a record context (parentId present), start with current recursive total for that record
+        if let pid = parentId, let parent = observations.findRecord(by: pid) {
+            tempCount = recursiveCount(parent)
+        } else {
+            // Default for new root additions
+            tempCount = 1
+        }
     }
 
     // MARK: Logic
     private func adjust(_ delta: Int) {
-    let newVal = max(1, tempCount + delta)
-    if newVal != tempCount { tempCount = newVal; UIImpactFeedbackGenerator(style: .soft).impactOccurred() }
+        // Allow adjusting down to 0
+        let newVal = max(0, tempCount + delta)
+        if newVal != tempCount { tempCount = newVal; UIImpactFeedbackGenerator(style: .soft).impactOccurred() }
     }
     private func commitAndClose() {
-        guard tempCount >= 1 else { onDone(); return }
-    observations.addObservation(taxon.id, begin: Date(), end: nil, count: tempCount)
+        if let pid = parentId, let parent = observations.findRecord(by: pid) {
+            // Compute delta from current recursive total to desired total and add as a child (can be negative)
+            let currentTotal = recursiveCount(parent)
+            let delta = tempCount - currentTotal
+            if delta != 0 {
+                _ = observations.addChildObservation(parentId: pid, taxonId: taxon.id, begin: Date(), end: nil, count: delta)
+            }
+        } else {
+            // For new root additions, treat tempCount as the count to add; allow 0 => no-op
+            if tempCount > 0 {
+                observations.addObservation(taxon.id, begin: Date(), end: nil, count: tempCount)
+            }
+        }
         onDone()
     }
 }
@@ -93,6 +112,11 @@ private struct StepControlsView: View {
             .buttonStyle(.plain)
         }
     }
+}
+
+// MARK: - Local helpers
+private func recursiveCount(_ r: ObservationRecord) -> Int {
+    r.count + r.children.map { recursiveCount($0) }.reduce(0, +)
 }
 
 private struct ActionBarView: View {

@@ -26,7 +26,7 @@ public struct ObservationRecord: Identifiable, Codable, Equatable {
         self.taxonId = taxonId
         self.begin = begin
         self.end = end ?? begin
-        self.count = max(0, count)
+    self.count = count
         self.parentId = nil
         self.children = []
     }
@@ -38,7 +38,7 @@ public struct ObservationRecord: Identifiable, Codable, Equatable {
         self.taxonId = taxonId
         self.begin = begin
         self.end = end ?? begin
-        self.count = max(0, count)
+    self.count = count
         self.parentId = parent.id
         self.children = []
         // After initialization, append to parent's children to maintain hierarchy.
