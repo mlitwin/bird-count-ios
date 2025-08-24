@@ -1,6 +1,6 @@
 name: BirdCount
 options:
-  bundleIdPrefix: com.birdcount
+  bundleIdPrefix: org.antoninus.birdcount
 configs:
   Debug: debug
   Release: release
@@ -32,7 +32,7 @@ targets:
         CFBundleVersion: "1"
         UILaunchScreen: {}
     settings:
-      PRODUCT_BUNDLE_IDENTIFIER: com.birdcount.app
+      PRODUCT_BUNDLE_IDENTIFIER: org.antoninus.birdcount.app
       ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
     scripts:
       - name: Generate Taxonomy
@@ -56,7 +56,7 @@ targets:
       target: BirdCount
     settings:
       GENERATE_INFOPLIST_FILE: YES
-      PRODUCT_BUNDLE_IDENTIFIER: com.birdcount.tests
+      PRODUCT_BUNDLE_IDENTIFIER: org.antoninus.birdcount.app
       CODE_SIGNING_ALLOWED: NO
 
   BirdCountCore:
@@ -67,7 +67,7 @@ targets:
       - path: BirdCount/Models
       - path: BirdCount/Stores
     settings:
-      PRODUCT_BUNDLE_IDENTIFIER: com.birdcount.core
+      PRODUCT_BUNDLE_IDENTIFIER: org.antoninus.birdcount.core
 
   BirdCountCoreTests:
     type: bundle.unit-test
@@ -79,7 +79,7 @@ targets:
       - target: BirdCountCore
     settings:
       GENERATE_INFOPLIST_FILE: YES
-      PRODUCT_BUNDLE_IDENTIFIER: com.birdcount.core.tests
+      PRODUCT_BUNDLE_IDENTIFIER: org.antoninus.birdcount.core.tests
       CODE_SIGNING_ALLOWED: NO
 
 schemes:

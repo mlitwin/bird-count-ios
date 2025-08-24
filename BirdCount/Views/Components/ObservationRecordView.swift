@@ -27,7 +27,7 @@ struct ObservationRecordView: View {
         .onTapGesture { showAdjust = true }
         .sheet(isPresented: $showAdjust) {
             if let taxon = taxon {
-                CountAdjustSheet(taxon: taxon, parentId: record.id) { showAdjust = false }
+                CountAdjustSheet(taxon: taxon, parentId: record.id, onDone: { showAdjust = false })
             } else {
                 // Fallback: dismiss if taxon not found
                 Color.clear.onAppear { showAdjust = false }

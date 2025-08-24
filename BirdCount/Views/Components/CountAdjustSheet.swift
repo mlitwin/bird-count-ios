@@ -6,6 +6,9 @@ struct CountAdjustSheet: View, Identifiable {
     // Optional parent record id; when present, new observations will be attached as children of this parent
     var parentId: UUID? = nil
     let onDone: () -> Void
+    // Optional callback fired after pressing Done; indicates if a root observation was actually added (true)
+    // Used by callers like HomeView to clear the filter when a new observation is created from a taxon.
+    var onCommitted: ((Bool) -> Void)? = nil
     var id: String { taxon.id }
     @State private var tempCount: Int = 1 // desired total count when adjusting existing record
     // Numeric keypad removed; simple +/- controls only
@@ -45,6 +48,7 @@ struct CountAdjustSheet: View, Identifiable {
         if newVal != tempCount { tempCount = newVal; UIImpactFeedbackGenerator(style: .soft).impactOccurred() }
     }
     private func commitAndClose() {
+        var didAddRootObservation = false
         if let pid = parentId, let parent = observations.findRecord(by: pid) {
             // Compute delta from current recursive total to desired total and add as a child (can be negative)
             let currentTotal = recursiveCount(parent)
@@ -56,8 +60,11 @@ struct CountAdjustSheet: View, Identifiable {
             // For new root additions, treat tempCount as the count to add; allow 0 => no-op
             if tempCount > 0 {
                 observations.addObservation(taxon.id, begin: Date(), end: nil, count: tempCount)
+                didAddRootObservation = true
             }
         }
+        // Notify caller whether a root observation was added (HomeView may clear filter)
+        onCommitted?(didAddRootObservation)
         onDone()
     }
 }

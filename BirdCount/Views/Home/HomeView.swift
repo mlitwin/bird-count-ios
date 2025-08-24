@@ -90,9 +90,15 @@ struct HomeView: View {
                                 .onTapGesture { withAnimation(.spring(response: 0.3, dampingFraction: 0.9)) { selectedTaxon = nil } }
 
                             VStack(spacing: 0) {
-                                CountAdjustSheet(taxon: taxon) {
-                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.9)) { selectedTaxon = nil }
-                                }
+                                CountAdjustSheet(
+                                    taxon: taxon,
+                                    onDone: {
+                                        withAnimation(.spring(response: 0.3, dampingFraction: 0.9)) { selectedTaxon = nil }
+                                    },
+                                    onCommitted: { didAdd in
+                                        if didAdd { filterText = "" }
+                                    }
+                                )
                                 // Measure intrinsic height of the sheet's content
                                 .background(
                                     GeometryReader { sheetGeo in
