@@ -1,0 +1,68 @@
+default_platform(:ios)
+
+platform :ios do
+  # Ensures xcodegen is available and regenerates the Xcode project from project.yml
+  desc "Generate Xcode project via XcodeGen"
+  lane :generate do
+    sh("which xcodegen >/dev/null 2>&1 || brew install xcodegen")
+  # Use absolute path to the repo-root spec to avoid cwd issues
+  spec = File.expand_path('../project.yml', __dir__)
+  sh("xcodegen generate --use-cache --spec #{spec}")
+  end
+
+  # Build the app for the iOS simulator (Debug)
+  # Uses the scheme defined in project.yml (BirdCount)
+  desc "Build app for iOS simulator (Debug)"
+  lane :build_sim do
+    # Regenerate project to ensure it's current
+    generate
+    proj = File.expand_path('../BirdCount.xcodeproj', __dir__)
+    gym(
+      scheme: "BirdCount",
+      configuration: "Debug",
+      project: proj,
+      destination: "generic/platform=iOS Simulator",
+      skip_package_ipa: true,
+      skip_archive: true,
+      clean: true,
+      output_directory: "build",
+      output_name: "BirdCount-Sim.xcarchive"
+    )
+  end
+
+  # Run tests for both macOS core tests and iOS unit tests using scan
+  desc "Run unit tests (macOS core + iOS)"
+  lane :test_all do
+    generate
+    proj = File.expand_path('../BirdCount.xcodeproj', __dir__)
+    # macOS core tests
+    scan(
+      scheme: "BirdCountCore",
+      project: proj,
+      devices: ["My Mac"],
+      clean: true
+    )
+    # iOS tests
+    scan(
+      scheme: "BirdCount",
+      project: proj,
+      devices: ["iPhone 16"],
+      clean: true
+    )
+  end
+
+  # Archive the iOS app for distribution (ad-hoc/local without signing upload)
+  desc "Archive iOS app (Release)"
+  lane :archive do
+    generate
+    proj = File.expand_path('../BirdCount.xcodeproj', __dir__)
+    gym(
+      scheme: "BirdCount",
+      configuration: "Release",
+      project: proj,
+      clean: true,
+      output_directory: "build",
+      output_name: "BirdCount.ipa"
+    )
+  end
+end
