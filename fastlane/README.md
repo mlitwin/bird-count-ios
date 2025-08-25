@@ -47,6 +47,22 @@ Run unit tests (macOS core + iOS)
 
 Archive iOS app (Release)
 
+### ios beta
+
+```sh
+[bundle exec] fastlane ios beta
+```
+
+Build and upload to TestFlight (Release)
+
+### ios codesign_auto
+
+```sh
+[bundle exec] fastlane ios codesign_auto
+```
+
+Enable Automatic Signing for project (set DEVELOPMENT_TEAM_ID env var)
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.

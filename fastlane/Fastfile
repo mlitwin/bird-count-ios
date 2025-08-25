@@ -7,7 +7,8 @@ platform :ios do
     sh("which xcodegen >/dev/null 2>&1 || brew install xcodegen")
   # Use absolute path to the repo-root spec to avoid cwd issues
   spec = File.expand_path('../project.yml', __dir__)
-  sh("xcodegen generate --use-cache --spec #{spec}")
+  # Force regenerate to avoid stale/corrupted project files
+  sh("xcodegen generate --spec #{spec}")
   end
 
   # Build the app for the iOS simulator (Debug)
@@ -56,13 +57,106 @@ platform :ios do
   lane :archive do
     generate
     proj = File.expand_path('../BirdCount.xcodeproj', __dir__)
+    # Ensure automatic signing is enabled and team is set
+    team_id = ENV['DEVELOPMENT_TEAM_ID'] || ENV['FASTLANE_TEAM_ID']
+    if team_id && !team_id.empty?
+      if team_id.strip.match?(/^[A-Z0-9]{10}$/)
+        update_project_team(path: proj, teamid: team_id)
+        begin
+          update_code_signing_settings(
+            use_automatic_signing: true,
+            path: proj,
+            team_id: team_id
+          )
+        rescue => e
+          UI.important("Skipping update_code_signing_settings due to project parsing issue: #{e.message}")
+        end
+      else
+        UI.user_error!("DEVELOPMENT_TEAM_ID must be your 10-character Apple Team ID (e.g. ABCDE12345). Current value: '#{team_id}'")
+      end
+    else
+      UI.message("No DEVELOPMENT_TEAM_ID provided; proceeding with existing project signing settings")
+    end
     gym(
       scheme: "BirdCount",
       configuration: "Release",
       project: proj,
       clean: true,
+      xcargs: "-allowProvisioningUpdates",
       output_directory: "build",
       output_name: "BirdCount.ipa"
+    )
+  end
+
+  # Build and upload a Release build to TestFlight
+  desc "Build and upload to TestFlight (Release)"
+  lane :beta do
+    generate
+    proj = File.expand_path('../BirdCount.xcodeproj', __dir__)
+    # Configure App Store Connect authentication using 3 required env vars only
+    key_id = (ENV['APP_STORE_CONNECT_API_KEY_ID'] || '').strip
+    issuer_id = (ENV['APP_STORE_CONNECT_ISSUER_ID'] || '').strip
+    key_raw = (ENV['APP_STORE_CONNECT_API_KEY'] || '').strip
+    unless key_id.length > 0 && issuer_id.length > 0 && key_raw.length > 0
+      UI.user_error!("Missing App Store Connect API key env vars. Set APP_STORE_CONNECT_API_KEY_ID, APP_STORE_CONNECT_ISSUER_ID, and APP_STORE_CONNECT_API_KEY (tip: `make fastlane-beta`).")
+    end
+    asc_api_key = app_store_connect_api_key(
+      key_id: key_id,
+      issuer_id: issuer_id,
+      key_content: key_raw,
+      is_key_content_base64: false
+    )
+    # Ensure automatic signing is enabled and team is set
+    team_id = ENV['DEVELOPMENT_TEAM_ID'] || ENV['FASTLANE_TEAM_ID']
+    if team_id && !team_id.empty?
+      if team_id.strip.match?(/^[A-Z0-9]{10}$/)
+        update_project_team(path: proj, teamid: team_id)
+        begin
+          update_code_signing_settings(
+            use_automatic_signing: true,
+            path: proj,
+            team_id: team_id
+          )
+        rescue => e
+          UI.important("Skipping update_code_signing_settings due to project parsing issue: #{e.message}")
+        end
+      else
+        UI.user_error!("DEVELOPMENT_TEAM_ID must be your 10-character Apple Team ID (e.g. ABCDE12345). Current value: '#{team_id}'")
+      end
+    else
+      UI.message("No DEVELOPMENT_TEAM_ID provided; proceeding with existing project signing settings")
+    end
+    ipa_path = gym(
+      scheme: "BirdCount",
+      configuration: "Release",
+      project: proj,
+      clean: true,
+  export_method: "app-store",
+      xcargs: "-allowProvisioningUpdates",
+      output_directory: "build",
+      output_name: "BirdCount.ipa"
+    )
+
+    upload_to_testflight(
+      ipa: ipa_path,
+      skip_waiting_for_build_processing: false,
+      changelog: ENV['BETA_CHANGELOG'] || "Beta build",
+      api_key: asc_api_key
+    )
+  end
+
+  # Optionally run this once to flip the project to automatic signing for your Team
+  desc "Enable Automatic Signing for project (set DEVELOPMENT_TEAM_ID env var)"
+  lane :codesign_auto do
+    proj = File.expand_path('../BirdCount.xcodeproj', __dir__)
+    team_id = ENV['DEVELOPMENT_TEAM_ID'] || ENV['FASTLANE_TEAM_ID']
+    UI.user_error!("Please set DEVELOPMENT_TEAM_ID env var to your 10-character Apple Team ID (e.g. ABCDE12345)") unless team_id && !team_id.empty?
+    UI.user_error!("DEVELOPMENT_TEAM_ID must be 10 alphanumeric characters") unless team_id.strip.match?(/^[A-Z0-9]{10}$/)
+    update_project_team(path: proj, teamid: team_id)
+    update_code_signing_settings(
+      use_automatic_signing: true,
+      path: proj,
+      team_id: team_id
     )
   end
 end

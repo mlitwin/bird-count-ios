@@ -49,3 +49,9 @@ core-test:
 		-scheme "BirdCountCore" \
 		-configuration "$(CONFIGURATION)" \
 		test
+
+fastlane-beta:
+	op run --env-file apple.env -- bundle exec fastlane beta
+
+
+	
