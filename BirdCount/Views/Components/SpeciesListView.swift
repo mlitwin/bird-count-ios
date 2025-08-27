@@ -5,7 +5,7 @@ struct SpeciesListView: View {
     let counts: [String:Int]
     let onSelect: (Taxon) -> Void
 
-    init(taxa: [Taxon], counts: [String:Int], onSelect: @escaping (Taxon) -> Void) {
+    init(taxa: [Taxon], counts: [String:Int] = [:], onSelect: @escaping (Taxon) -> Void) {
         self.taxa = taxa
         self.counts = counts
         self.onSelect = onSelect

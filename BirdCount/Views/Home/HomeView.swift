@@ -12,7 +12,6 @@ struct HomeView: View {
     @State private var selectedTaxon: Taxon? = nil
     @State private var bottomControlsHeight: CGFloat = 0
     @State private var sheetContentHeight: CGFloat = 0
-    @State private var rangeCounts: [String:Int] = [:]
 
     private var filtered: [Taxon] { taxonomy.search(filterText, minCommonness: settings.selectedChecklistId != nil ? settings.minCommonness : nil, maxCommonness: settings.selectedChecklistId != nil ? settings.maxCommonness : nil) }
 
@@ -113,7 +112,7 @@ struct HomeView: View {
         } else if taxonomy.species.isEmpty {
             ContentUnavailableView("No Species", systemImage: "bird", description: Text("Taxonomy file empty"))
         } else {
-            SpeciesListView(taxa: filtered, counts: rangeCounts) { taxon in
+            SpeciesListView(taxa: filtered) { taxon in
                 selectedTaxon = taxon
             }
         }
