@@ -113,46 +113,10 @@ struct HomeView: View {
         } else if taxonomy.species.isEmpty {
             ContentUnavailableView("No Species", systemImage: "bird", description: Text("Taxonomy file empty"))
         } else {
-            speciesList
-        }
-    }
-
-    private var speciesList: some View {
-    GeometryReader { proxy in
-            ScrollView {
-                LazyVStack(spacing: 0) {
-                    ForEach(filtered) { taxon in
-                        VStack(spacing: 0) {
-                            HStack(alignment: .center, spacing: 12) {
-                                SpeciesRow(taxon: taxon)
-                                if let c = taxon.commonness {
-                                    Text(commonnessLabel(c)).font(.footnote).padding(4).background(RoundedRectangle(cornerRadius: 4).fill(Color.gray.opacity(0.15)))
-                                }
-                                Spacer()
-                                let count = rangeCounts[taxon.id] ?? 0
-                                if count > 0 {
-                                    Text("\(count)")
-                                        .font(.headline.monospacedDigit())
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 4)
-                                        .background(Capsule().fill(Color.accentColor.opacity(0.15)))
-                                        .overlay(Capsule().stroke(Color.accentColor, lineWidth: 1))
-                                        .accessibilityLabel("\(taxon.commonName) count \(count)")
-                                }
-                            }
-                                .contentShape(Rectangle())
-                                .onTapGesture { selectedTaxon = taxon }
-                                .padding(.horizontal)
-                                .padding(.vertical, 6)
-                            Divider()
-                        }
-                    }
-                }
-                // Make stack at least as tall as available space and align its contents to bottom
-                .frame(minHeight: proxy.size.height, alignment: .bottom)
+            SpeciesListView(taxa: filtered, counts: rangeCounts) { taxon in
+                selectedTaxon = taxon
             }
-    }
-    .padding(.bottom, 24)
+        }
     }
 
         // Removed keyboard toggle button
@@ -174,22 +138,7 @@ private struct SheetContentHeightKey: PreferenceKey {
     }
 }
 
-private struct SpeciesRow: View {
-    let taxon: Taxon
-    var body: some View {
-        HStack(alignment: .center, spacing: 12) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(taxon.commonName)
-                    .font(.title3.weight(.semibold))
-                Text(taxon.scientificName)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-        }
-    }
-}
-
-private func commonnessLabel(_ c: Int) -> String { switch c { case 0: return "R"; case 1: return "S"; case 2: return "U"; case 3: return "C"; default: return "" } }
+    
 
 // A simple key that updates when range inputs change
 // (removed recomputeKey tuple to avoid Hashable conformance requirement)
