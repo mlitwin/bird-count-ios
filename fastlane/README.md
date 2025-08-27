@@ -63,14 +63,6 @@ Build and upload to TestFlight (Release)
 
 Enable Automatic Signing for project (set DEVELOPMENT_TEAM_ID env var)
 
-### ios pilot_add
-
-```sh
-[bundle exec] fastlane ios pilot_add
-```
-
-Invite a new TestFlight tester to the 'Birders' group (requires APP_STORE_CONNECT_API_KEY_*)
-
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.

@@ -1,6 +1,6 @@
 import SwiftUI
 
-public enum RangePreset: String, CaseIterable, Identifiable {
+public enum DateRangePreset: String, CaseIterable, Identifiable {
     case lastHour = "Last Hour"
     case today = "Today"
     case last7Days = "7 Days"
@@ -9,14 +9,14 @@ public enum RangePreset: String, CaseIterable, Identifiable {
     public var id: String { rawValue }
 }
 
-public struct RangeSelectorView: View {
-    @Binding var preset: RangePreset
+public struct DateRangeSelectorView: View {
+    @Binding var preset: DateRangePreset
     @Binding var startDate: Date
     @Binding var endDate: Date
     @State private var showCustomSheet: Bool = false
-    @State private var previousPreset: RangePreset? = nil
+    @State private var previousPreset: DateRangePreset? = nil
 
-    public init(preset: Binding<RangePreset>, startDate: Binding<Date>, endDate: Binding<Date>) {
+    public init(preset: Binding<DateRangePreset>, startDate: Binding<Date>, endDate: Binding<Date>) {
         self._preset = preset
         self._startDate = startDate
         self._endDate = endDate
@@ -92,7 +92,7 @@ public struct RangeSelectorView: View {
         }
     }
 
-    private func applyRangePreset(_ p: RangePreset) {
+    private func applyRangePreset(_ p: DateRangePreset) {
         let now = Date()
         switch p {
         case .lastHour:

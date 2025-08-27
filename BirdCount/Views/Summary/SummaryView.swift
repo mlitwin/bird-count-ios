@@ -6,11 +6,11 @@ struct SummaryView: View {
     @State private var shareSheet: Bool = false
     @State private var showLog: Bool = false
     // Range filter (provided from parent/top-level)
-    @Binding var preset: RangePreset
+    @Binding var preset: DateRangePreset
     @Binding var startDate: Date
     @Binding var endDate: Date
 
-    // RangePreset moved to Components/RangeSelectorView.swift
+    // DateRangePreset moved to Components/DateRangeSelectorView.swift
 
     // Lightweight models to simplify ForEach and type inference
     private struct UpdateItem: Identifiable {
@@ -26,7 +26,7 @@ struct SummaryView: View {
         let count: Int
     }
 
-    // applyRangePreset is handled inside RangeSelectorView
+    // applyRangePreset is handled inside DateRangeSelectorView
 
     private var observedSpecies: [(Taxon, Int)] {
         taxonomy.species
@@ -92,8 +92,8 @@ struct SummaryView: View {
                 .padding(.horizontal)
                 .padding(.vertical, 8)
 
-                // Range selector (only in Summary)
-                RangeSelectorView(preset: $preset, startDate: $startDate, endDate: $endDate)
+                // Date range selector (only in Summary)
+                DateRangeSelectorView(preset: $preset, startDate: $startDate, endDate: $endDate)
                     .padding(.horizontal)
                     .padding(.bottom, 8)
 

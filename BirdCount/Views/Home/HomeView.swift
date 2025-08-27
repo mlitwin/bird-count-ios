@@ -5,7 +5,7 @@ struct HomeView: View {
     @Environment(ObservationStore.self) private var observations
     @Environment(SettingsStore.self) private var settings
     // Shared range (reserved for future use in Home)
-    @Binding var preset: RangePreset
+    @Binding var preset: DateRangePreset
     @Binding var startDate: Date
     @Binding var endDate: Date
     @State private var filterText: String = ""
@@ -186,7 +186,7 @@ private extension TaxonomyStore {
 #if DEBUG
 #Preview("Home") {
     HomeView(
-        preset: .constant(.today),
+    preset: .constant(.today),
         startDate: .constant(Calendar.current.startOfDay(for: Date())),
         endDate: .constant(Date())
     )

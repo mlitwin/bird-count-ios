@@ -6,7 +6,7 @@ struct ObservationLogView: View {
     // Optional binding: if provided, shows a Close button (when used as a sheet); in Tab usage, omit it
     var show: Binding<Bool>? = nil
     // Shared date range
-    @Binding var preset: RangePreset
+    @Binding var preset: DateRangePreset
     @Binding var startDate: Date
     @Binding var endDate: Date
     @State private var exportSheet: Bool = false

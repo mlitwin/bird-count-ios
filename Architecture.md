@@ -9,11 +9,11 @@ This document describes the iOS app’s architecture, key modules, and data flow
 	- TaxonomyStore: loads species taxonomy and optional region checklist overlays; search and filters.
 	- ObservationStore: immutable event records with counts; derived per-species counts; persistence.
 	- SettingsStore: user preferences (abbreviation search, theme, checklist + commonness filters, haptics).
-- A reusable RangeSelectorView controls the active date range (relative presets or custom). Views compute an “effective range” and filter observations by interval overlap.
+- A reusable DateRangeSelectorView controls the active date range (relative presets or custom). Views compute an “effective range” and filter observations by interval overlap.
 
 Key entry points:
 - BirdCountApp.swift: bootstraps stores; hosts TopTabsRoot.
-- TopTabsRoot (private View): segmented tabs, Settings sheet, and the global RangeSelectorView.
+- TopTabsRoot (private View): segmented tabs, Settings sheet, and the global DateRangeSelectorView.
 
 ## Data model
 
@@ -60,7 +60,7 @@ SettingsStore (Stores/SettingsStore.swift)
 
 ## Global date range
 
-RangeSelectorView (Views/Components/RangeSelectorView.swift)
+DateRangeSelectorView (Views/Components/DateRangeSelectorView.swift)
 - Presets: Last Hour, Today, 7 Days, All, Custom (sheet-driven).
 - Summary text renders a compact one-line description of the active range.
 - Relative presets are always resolved relative to “now”.
@@ -80,7 +80,7 @@ Interval overlap predicate used consistently
 
 BirdCountApp.swift
 - Instantiates TaxonomyStore, ObservationStore, SettingsStore and injects them via .environment.
-- Hosts TopTabsRoot (private View) with segmented tabs, Settings button, and the RangeSelectorView.
+- Hosts TopTabsRoot (private View) with segmented tabs, Settings button, and the DateRangeSelectorView.
 
 HomeView (Views/Home/HomeView.swift)
 - Species list with optional checklist-based commonness filters and abbreviation search toggle.
@@ -101,7 +101,7 @@ ObservationLogView (Views/Summary/ObservationLogView.swift)
 - Navigation bar and background are hidden; optional Close button when used as a sheet.
 
 Components
-- RangeSelectorView: global control; presets [← Today → All Custom]; Custom opens a sheet with DatePickers and enforces start ≤ end.
+- DateRangeSelectorView: global control; presets [← Today → All Custom]; Custom opens a sheet with DatePickers and enforces start ≤ end.
 - CountAdjustSheet: compact count entry; step controls with integrated count display; commits one ObservationRecord with the selected count.
 - ObservationRecordView: displays a record’s species, formatted date/time range, and ×N badge; tap to adjust counts via CountAdjustSheet.
 - OnScreenKeyboard: virtual keyboard for Home filter text.
@@ -149,5 +149,5 @@ Components
 - In-app analytics for session length and per-species rates.
 - Merge adjacent records for the same species when times are within a small threshold.
 - iCloud/Files persistence option in addition to UserDefaults.
-- Snapshot tests for RangeSelectorView and range summaries.
+- Snapshot tests for DateRangeSelectorView and range summaries.
 

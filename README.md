@@ -15,7 +15,7 @@ BirdCount is a simple, fast, offline-first bird counting app. It lets you:
 - `BirdCount/` — Xcode project and SwiftUI source
 	- `Models/ObservationRecord.swift` — Observation model (begin/end, count)
 	- `Stores/ObservationStore.swift` — In-memory store, persistence, derived counts
-	- `Views/Components/` — Reusable UI (RangeSelectorView, CountAdjustSheet, ObservationRecordView)
+	- `Views/Components/` — Reusable UI (DateRangeSelectorView, CountAdjustSheet, ObservationRecordView)
 	- `Views/Home`, `Views/Summary` — Main tabs
 	- `Resources/ios_taxonomy_min.json` — Bundled minimal taxonomy
     - `Scripts/generate_ios_taxonomy.mjs` — Helper to generate taxonomy JSON (optional)
