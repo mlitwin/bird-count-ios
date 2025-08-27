@@ -46,7 +46,7 @@ struct SpeciesListView: View {
                     }
                 }
                 .frame(minHeight: proxy.size.height, alignment: .bottom)
-            }
+            }.defaultScrollAnchor(.bottom)
         }
         .padding(.bottom, 24)
     }
