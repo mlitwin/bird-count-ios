@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		011D6EA11871172D3EAC76CB /* ObservationRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCE0B9078509DFFC117339F /* ObservationRecordView.swift */; };
 		034D179F87D0FA03A1C9FABA /* ObservationRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB13F58DAFB4B97D611643BD /* ObservationRecord.swift */; };
+		0AC86B5E2CBE362C8C2809B5 /* CommonnessRangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA5730A98F05F30514E60A1 /* CommonnessRangeView.swift */; };
 		1A332FEB8AF6AFE2E8E39F6A /* BirdCountCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 490E29F6D3D7AA78458944AC /* BirdCountCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1FC3EA44A81F6C94E57C3757 /* CountAdjustSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFA8094EBAC869E648D7F854 /* CountAdjustSheet.swift */; };
 		208E0E02373AB724A6117666 /* Taxon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74ADC22819086097B12402BC /* Taxon.swift */; };
@@ -99,6 +100,7 @@
 		CA105FDD346A2759183A3BEE /* OnScreenKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnScreenKeyboard.swift; sourceTree = "<group>"; };
 		CC412F9A02FEF839809F38AC /* checklist.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = checklist.json; sourceTree = "<group>"; };
 		CCCBE3E988878FA83F955105 /* NumericPad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumericPad.swift; sourceTree = "<group>"; };
+		CEA5730A98F05F30514E60A1 /* CommonnessRangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonnessRangeView.swift; sourceTree = "<group>"; };
 		E1AE8BBD3313453070C1CF58 /* ShareActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareActivityView.swift; sourceTree = "<group>"; };
 		E3424E4DDD31730B25CEEBC1 /* generate_ios_taxonomy.mjs */ = {isa = PBXFileReference; path = generate_ios_taxonomy.mjs; sourceTree = "<group>"; };
 		E88A4BACD0DF593F50C9EF1D /* BirdCountTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BirdCountTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -228,6 +230,7 @@
 		C31E1911350BA41CAA275C11 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				CEA5730A98F05F30514E60A1 /* CommonnessRangeView.swift */,
 				783AD92EE988689DEFC27F00 /* SettingsView.swift */,
 			);
 			path = Settings;
@@ -423,6 +426,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C365B63760F17794D9B0605A /* BirdCountApp.swift in Sources */,
+				0AC86B5E2CBE362C8C2809B5 /* CommonnessRangeView.swift in Sources */,
 				1FC3EA44A81F6C94E57C3757 /* CountAdjustSheet.swift in Sources */,
 				4A0CBA6ADFDFA1248CB506FF /* DateRangeSelectorView.swift in Sources */,
 				5B4143CF290C1B88ED929590 /* HomeView.swift in Sources */,

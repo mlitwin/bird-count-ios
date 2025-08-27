@@ -26,14 +26,10 @@ struct SettingsView: View {
                         }
                     }
                     if settings.selectedChecklistId != nil {
-                        VStack(alignment: .leading) {
-                            Text("Show species with commonness between:")
-                            HStack {
-                                Stepper(value: binding(\.minCommonness), in: 0...3) { Text("Min: \(settings.minCommonness)") }
-                                Stepper(value: binding(\.maxCommonness), in: 0...3) { Text("Max: \(settings.maxCommonness)") }
-                            }
-                            CommonnessLegend()
-                        }
+                        CommonnessRangeView(
+                            minCommonness: binding(\.minCommonness),
+                            maxCommonness: binding(\.maxCommonness)
+                        )
                     }
                 }
                 Section("Feedback") {
@@ -77,19 +73,7 @@ struct SettingsView: View {
     }
 }
 
-private struct CommonnessLegend: View {
-    var body: some View {
-        HStack(spacing: 8) {
-            legendItem(code: "R", label: "Rare")
-            legendItem(code: "S", label: "Scarce")
-            legendItem(code: "U", label: "Uncommon")
-            legendItem(code: "C", label: "Common")
-        }
-        .font(.caption2)
-        .foregroundStyle(.secondary)
-    }
-    private func legendItem(code: String, label: String) -> some View { HStack(spacing: 2) { Text(code).bold(); Text(label) } }
-}
+// moved to CommonnessRangeView.swift
 
 #if DEBUG
 #Preview { SettingsView(show: .constant(true)).environment(SettingsStore()).environment(ObservationStore()).environment(TaxonomyStore()) }

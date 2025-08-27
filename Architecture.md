@@ -106,7 +106,8 @@ Components
 - ObservationRecordView: displays a record’s species, formatted date/time range, and ×N badge; tap to adjust counts via CountAdjustSheet.
 - OnScreenKeyboard: virtual keyboard for Home filter text.
 - ShareActivityView: UIActivityViewController wrapper.
-- SettingsView: preferences UI (abbreviation search, checklist selection + commonness bounds, haptics, theme, data reset).
+	- CommonnessRangeView: extracted commonness range control used by SettingsView
+	- SettingsView: preferences UI (abbreviation search, checklist selection + commonness bounds, haptics, theme, data reset).
 
 ## Persistence and resources
 
