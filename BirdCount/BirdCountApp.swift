@@ -51,13 +51,6 @@ private struct TopTabsRoot: View {
 
             Divider()
 
-            // Global Range Selector visible on all tabs
-            RangeSelectorView(preset: $preset, startDate: $startDate, endDate: $endDate)
-                .padding(.horizontal)
-                .padding(.vertical, 8)
-
-            Divider()
-
             // Content
             Group {
                 switch selection {

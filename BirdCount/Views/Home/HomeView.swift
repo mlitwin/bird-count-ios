@@ -12,34 +12,9 @@ struct HomeView: View {
     @State private var selectedTaxon: Taxon? = nil
     @State private var bottomControlsHeight: CGFloat = 0
     @State private var sheetContentHeight: CGFloat = 0
+    @State private var rangeCounts: [String:Int] = [:]
 
     private var filtered: [Taxon] { taxonomy.search(filterText, minCommonness: settings.selectedChecklistId != nil ? settings.minCommonness : nil, maxCommonness: settings.selectedChecklistId != nil ? settings.maxCommonness : nil) }
-
-    // Range-filtered counts per species
-    private var rangeCounts: [String:Int] {
-        let (effStart, effEnd) = effectiveRange
-    let filteredObs = observations.observations.filter { $0.end >= effStart && $0.begin <= effEnd }
-        return filteredObs.reduce(into: [String:Int]()) { $0[$1.taxonId, default: 0] += max(0, $1.count) }
-    }
-
-    // Dynamic range: for relative presets, recompute against "now"
-    private var effectiveRange: (Date, Date) {
-        let now = Date()
-        switch preset {
-        case .today:
-            return (Calendar.current.startOfDay(for: now), now)
-        case .lastHour:
-            let start = Calendar.current.date(byAdding: .hour, value: -1, to: now) ?? now
-            return (start, now)
-        case .last7Days:
-            let start = Calendar.current.date(byAdding: .day, value: -7, to: now) ?? now
-            return (start, now)
-        case .all:
-            return (.distantPast, now)
-        case .custom:
-            return (startDate, endDate)
-        }
-    }
 
     var body: some View {
         NavigationStack {
@@ -79,7 +54,10 @@ struct HomeView: View {
             .onChange(of: settings.selectedChecklistId) { _, newId in
                 if let id = newId { taxonomy.loadChecklist(id: id) }
             }
-            .task { if let id = settings.selectedChecklistId { taxonomy.loadChecklist(id: id) } }
+            .task {
+                if let id = settings.selectedChecklistId { taxonomy.loadChecklist(id: id) }
+            }
+            // No range-based recompute here
             // Present CountAdjustSheet as a custom bottom overlay, shifted up by the bottom controls height
             .overlay(alignment: .bottom) {
                 if let taxon = selectedTaxon {
@@ -144,9 +122,24 @@ struct HomeView: View {
             ScrollView {
                 LazyVStack(spacing: 0) {
                     ForEach(filtered) { taxon in
-                        let count = rangeCounts[taxon.id] ?? 0
                         VStack(spacing: 0) {
-                            SpeciesRow(taxon: taxon, count: count)
+                            HStack(alignment: .center, spacing: 12) {
+                                SpeciesRow(taxon: taxon)
+                                if let c = taxon.commonness {
+                                    Text(commonnessLabel(c)).font(.footnote).padding(4).background(RoundedRectangle(cornerRadius: 4).fill(Color.gray.opacity(0.15)))
+                                }
+                                Spacer()
+                                let count = rangeCounts[taxon.id] ?? 0
+                                if count > 0 {
+                                    Text("\(count)")
+                                        .font(.headline.monospacedDigit())
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 4)
+                                        .background(Capsule().fill(Color.accentColor.opacity(0.15)))
+                                        .overlay(Capsule().stroke(Color.accentColor, lineWidth: 1))
+                                        .accessibilityLabel("\(taxon.commonName) count \(count)")
+                                }
+                            }
                                 .contentShape(Rectangle())
                                 .onTapGesture { selectedTaxon = taxon }
                                 .padding(.horizontal)
@@ -183,7 +176,6 @@ private struct SheetContentHeightKey: PreferenceKey {
 
 private struct SpeciesRow: View {
     let taxon: Taxon
-    let count: Int
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
             VStack(alignment: .leading, spacing: 2) {
@@ -193,21 +185,14 @@ private struct SpeciesRow: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
-            Spacer()
-            if let c = taxon.commonness { Text(commonnessLabel(c)).font(.footnote).padding(4).background(RoundedRectangle(cornerRadius: 4).fill(Color.gray.opacity(0.15))) }
-            if count > 0 {
-                Text("\(count)")
-                    .font(.headline.monospacedDigit())
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(Capsule().fill(Color.accentColor.opacity(0.15)))
-                    .overlay(Capsule().stroke(Color.accentColor, lineWidth: 1))
-                    .accessibilityLabel("\(taxon.commonName) count \(count)")
-            }
         }
     }
-    private func commonnessLabel(_ c: Int) -> String { switch c { case 0: return "R"; case 1: return "S"; case 2: return "U"; case 3: return "C"; default: return "" } }
 }
+
+private func commonnessLabel(_ c: Int) -> String { switch c { case 0: return "R"; case 1: return "S"; case 2: return "U"; case 3: return "C"; default: return "" } }
+
+// A simple key that updates when range inputs change
+// (removed recomputeKey tuple to avoid Hashable conformance requirement)
 
 private struct FilterBar: View {
     let text: String

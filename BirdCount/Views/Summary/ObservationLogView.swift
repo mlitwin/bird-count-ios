@@ -11,33 +11,15 @@ struct ObservationLogView: View {
     @Binding var endDate: Date
     @State private var exportSheet: Bool = false
 
-    // Flattened list of records within range, preserving children so ObservationRecordView can compute recursive totals
+    // Flattened list of records (no date filtering here), preserving children so ObservationRecordView can compute recursive totals
     private var display: [ObservationRecord] { buildDisplay() }
 
     private func buildDisplay() -> [ObservationRecord] {
-        let (effStart, effEnd) = effectiveRange
-        let filtered = observationsStore.observations.filter { $0.end >= effStart && $0.begin <= effEnd }
+        let all = observationsStore.observations
         // Keep original records (with children) and just sort by begin
-        return filtered.sorted { $0.begin < $1.begin }
+        return all.sorted { $0.begin < $1.begin }
     }
 
-    private var effectiveRange: (Date, Date) {
-        let now = Date()
-        switch preset {
-        case .today:
-            return (Calendar.current.startOfDay(for: now), now)
-        case .lastHour:
-            let start = Calendar.current.date(byAdding: .hour, value: -1, to: now) ?? now
-            return (start, now)
-        case .last7Days:
-            let start = Calendar.current.date(byAdding: .day, value: -7, to: now) ?? now
-            return (start, now)
-        case .all:
-            return (.distantPast, now)
-        case .custom:
-            return (startDate, endDate)
-        }
-    }
 
     var body: some View {
         NavigationStack {
