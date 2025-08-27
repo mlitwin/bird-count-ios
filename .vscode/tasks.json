@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Regenerate Xcode project",
+			"type": "shell",
+			"command": "bundle exec fastlane generate",
+			"problemMatcher": [
+				"$swiftc"
+			]
+		}
+	]
+}
