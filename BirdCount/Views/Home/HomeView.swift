@@ -13,6 +13,8 @@ struct HomeView: View {
     @State private var selectedTaxon: Taxon? = nil
     @State private var bottomControlsHeight: CGFloat = 0
     @State private var sheetContentHeight: CGFloat = 0
+    // Keep CountAdjustSheet aligned with SpeciesListView bottom
+    private let speciesListBottomPadding: CGFloat = 48
 
     private var filtered: [Taxon] { taxonomy.search(filterText, minCommonness: settings.selectedChecklistId != nil ? settings.minCommonness : nil, maxCommonness: settings.selectedChecklistId != nil ? settings.maxCommonness : nil) }
 
@@ -98,7 +100,7 @@ struct HomeView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                             .shadow(radius: 10)
                             .padding(.horizontal, 12)
-                            .padding(.bottom, bottomControlsHeight)
+                            .padding(.bottom, bottomControlsHeight + speciesListBottomPadding)
                             .transition(.move(edge: .bottom).combined(with: .opacity))
                         }
                         .ignoresSafeArea()
