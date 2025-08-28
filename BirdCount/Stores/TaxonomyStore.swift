@@ -114,12 +114,11 @@ import Observation
     func search(_ text: String, minCommonness: Int? = nil, maxCommonness: Int? = nil) -> [Taxon] {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         let needle = trimmed.lowercased()
-        let isAbbr = !needle.isEmpty && needle.range(of: "^[a-zA-Z]+$", options: .regularExpression) != nil
         // Filter first
         let filtered = species.filter { taxon in
             if let minC = minCommonness, let maxC = maxCommonness, let c = taxon.commonness, (c < minC || c > maxC) { return false }
             if trimmed.isEmpty { return true }
-            if isAbbr { return taxon.abbreviations.contains { $0.lowercased().hasPrefix(needle) } }
+            if taxon.abbreviations.contains(where: { $0.lowercased().hasPrefix(needle) }) { return true }
             return taxon.commonName.lowercased().contains(needle) || taxon.scientificName.lowercased().contains(needle)
         }
         // Then sort by derived order with a recency bucket:
