@@ -8,6 +8,23 @@
 			"problemMatcher": [
 				"$swiftc"
 			]
+		},
+		{
+			"label": "Run Swift Tests",
+			"type": "shell",
+			"command": "xcodebuild",
+			"args": [
+				"-scheme",
+				"BirdCount",
+				"-project",
+				"/Users/mlitwin/Dev/github.com/mlitwin/bird-count-ios/BirdCount.xcodeproj",
+				"-destination",
+				"platform=iOS Simulator,name=iPhone 15",
+				"test"
+			],
+			"problemMatcher": [
+				"$swiftc"
+			]
 		}
 	]
 }

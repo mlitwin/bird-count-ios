@@ -115,12 +115,48 @@ import Observation
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         let needle = trimmed.lowercased()
         let isAbbr = !needle.isEmpty && needle.range(of: "^[a-zA-Z]+$", options: .regularExpression) != nil
-        return species.filter { taxon in
+        // Filter first
+        let filtered = species.filter { taxon in
             if let minC = minCommonness, let maxC = maxCommonness, let c = taxon.commonness, (c < minC || c > maxC) { return false }
             if trimmed.isEmpty { return true }
             if isAbbr { return taxon.abbreviations.contains { $0.lowercased().hasPrefix(needle) } }
             return taxon.commonName.lowercased().contains(needle) || taxon.scientificName.lowercased().contains(needle)
         }
+        // Then sort by derived order with a recency bucket:
+        // 1) Species seen in the last 24h are always at the bottom, ordered older→newer so the most recent are last.
+        // 2) All others are ordered as before: least→most common; tie-break by recency older→newer; then taxonomy order, then name.
+        let lastDates: [String:Date]? = {
+            let snapshot = ObservationStoreProxy.shared.lastDatesSnapshot()
+            return snapshot.isEmpty ? nil : snapshot
+        }()
+        let cutoff = Date().addingTimeInterval(-24 * 60 * 60)
+        return filtered.sorted { compareTaxa($0, $1, lastDates: lastDates, cutoff: cutoff) }
+    }
+}
+
+private extension TaxonomyStore {
+    /// Comparison used for species sorting in search results.
+    /// - Rules:
+    ///   1. Species seen within last 24h go to the bottom; within this bucket order older→newer.
+    ///   2. Others: order by commonness ascending; tie-break older→newer; then taxonomy order; then name.
+    func compareTaxa(_ a: Taxon, _ b: Taxon, lastDates: [String:Date]?, cutoff: Date) -> Bool {
+        let ca = a.commonness ?? Int.max
+        let cb = b.commonness ?? Int.max
+        let da = lastDates?[a.id]
+        let db = lastDates?[b.id]
+        let ra = (da != nil) && (da! >= cutoff)
+        let rb = (db != nil) && (db! >= cutoff)
+        if ra != rb { return !ra && rb } // non-recent first; recent to bottom
+        if ra && rb {
+            if da != db { return (da ?? .distantPast) < (db ?? .distantPast) }
+            // fall through to stable tie-breakers
+        }
+        if ca != cb { return ca < cb }
+        if let da, let db, da != db { return da < db } // older first
+        if da == nil && db != nil { return true }
+        if da != nil && db == nil { return false }
+        if a.order != b.order { return a.order < b.order }
+        return a.commonName < b.commonName
     }
 }
 

@@ -25,6 +25,7 @@ import Observation
     }
 
     func count(for id: String) -> Int { cache.count(for: id) }
+    func lastObservedDate(for id: String) -> Date? { cache.lastObservedDate(for: id) }
 
     // MARK: Mutations
     func addObservation(_ taxonId: String, begin: Date = Date(), end: Date? = nil, count: Int = 1) {
@@ -104,6 +105,18 @@ import Observation
             do { let decoder = JSONDecoder(); decoder.dateDecodingStrategy = .iso8601; observations = try decoder.decode([ObservationRecord].self, from: data) } catch { observations = [] }
         }
     }
+}
+
+// MARK: - Lightweight proxy to expose last-observed snapshot without coupling stores
+final class ObservationStoreProxy {
+    static let shared = ObservationStoreProxy()
+    private weak var store: ObservationStore?
+    func register(_ store: ObservationStore) { self.store = store }
+    func lastDatesSnapshot() -> [String:Date] { store?.cacheSnapshotLastObserved() ?? [:] }
+}
+
+private extension ObservationStore {
+    func cacheSnapshotLastObserved() -> [String:Date] { cache.lastObservedAt }
 }
 
 #if DEBUG

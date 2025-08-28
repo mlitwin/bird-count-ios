@@ -3,6 +3,7 @@ import SwiftUI
 struct HomeView: View {
     @Environment(TaxonomyStore.self) private var taxonomy
     @Environment(ObservationStore.self) private var observations
+    @State private var scrollToBottomSignal: Int = 0
     @Environment(SettingsStore.self) private var settings
     // Shared range (reserved for future use in Home)
     @Binding var preset: DateRangePreset
@@ -50,6 +51,7 @@ struct HomeView: View {
             // Hide the nav bar entirely so it doesn't reserve space at the top
             .toolbar(.hidden, for: .navigationBar)
             .toolbarBackground(.hidden, for: .navigationBar)
+            .onAppear { ObservationStoreProxy.shared.register(observations) }
             .onChange(of: settings.selectedChecklistId) { _, newId in
                 if let id = newId { taxonomy.loadChecklist(id: id) }
             }
@@ -73,7 +75,11 @@ struct HomeView: View {
                                         withAnimation(.spring(response: 0.3, dampingFraction: 0.9)) { selectedTaxon = nil }
                                     },
                                     onCommitted: { didAdd in
-                                        if didAdd { filterText = "" }
+                                        if didAdd {
+                                            filterText = ""
+                                            // Trigger scroll to bottom so newest/recent species are visible
+                                            scrollToBottomSignal &+= 1
+                                        }
                                     }
                                 )
                                 // Measure intrinsic height of the sheet's content
@@ -112,7 +118,7 @@ struct HomeView: View {
         } else if taxonomy.species.isEmpty {
             ContentUnavailableView("No Species", systemImage: "bird", description: Text("Taxonomy file empty"))
         } else {
-            SpeciesListView(taxa: filtered) { taxon in
+            SpeciesListView(taxa: filtered, scrollToBottomSignal: scrollToBottomSignal) { taxon in
                 selectedTaxon = taxon
             }
         }
