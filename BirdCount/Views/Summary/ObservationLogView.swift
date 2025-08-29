@@ -25,6 +25,21 @@ struct ObservationLogView: View {
         NavigationStack {
             List(display) { rec in
                 ObservationRecordView(record: rec)
+                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                        Button(role: .destructive) {
+                            let total = recursiveCount(rec)
+                            guard total != 0 else { return }
+                            _ = observationsStore.addChildObservation(
+                                parentId: rec.id,
+                                taxonId: rec.taxonId,
+                                begin: Date(),
+                                end: nil,
+                                count: -total
+                            )
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
             }
         
         .toolbar {

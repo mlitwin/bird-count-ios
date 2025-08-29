@@ -39,9 +39,14 @@ struct SummaryView: View {
 
     private var speciesInRange: [SpeciesCountItem] {
         // Aggregate counts within the selected range (dynamic for relative presets)
-    let (effStart, effEnd) = effectiveRange
-    let filtered = observations.observations.filter { $0.end >= effStart && $0.begin <= effEnd }
-    let counts = filtered.reduce(into: [String:Int]()) { $0[$1.taxonId, default: 0] += max(0, $1.count) }
+        // Respect child observations by flattening the tree and summing each node that overlaps the range.
+        let (effStart, effEnd) = effectiveRange
+        let all: [ObservationRecord] = flatten(observations.observations)
+        let filtered = all.filter { $0.end >= effStart && $0.begin <= effEnd }
+        // Sum raw counts (children may be negative to zero-out a parent)
+        let counts = filtered.reduce(into: [String:Int]()) { acc, r in
+            acc[r.taxonId, default: 0] += r.count
+        }
         return taxonomy.species.compactMap { t in
             if let c = counts[t.id], c > 0 {
                 return SpeciesCountItem(id: t.id, taxon: t, count: c)
@@ -50,6 +55,18 @@ struct SummaryView: View {
             }
         }
         .sorted { $0.taxon.commonName < $1.taxon.commonName }
+    }
+
+    // Flatten nested observations so filtering happens per node (parent and children)
+    private func flatten(_ records: [ObservationRecord]) -> [ObservationRecord] {
+        var result: [ObservationRecord] = []
+        result.reserveCapacity(records.count)
+        func walk(_ r: ObservationRecord) {
+            result.append(r)
+            if !r.children.isEmpty { r.children.forEach(walk) }
+        }
+        records.forEach(walk)
+        return result
     }
 
     private var effectiveRange: (Date, Date) {
