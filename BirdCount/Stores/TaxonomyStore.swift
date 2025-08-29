@@ -114,12 +114,25 @@ import Observation
     func search(_ text: String, minCommonness: Int? = nil, maxCommonness: Int? = nil) -> [Taxon] {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         let needle = trimmed.lowercased()
-        // Filter first
-        let filtered = species.filter { taxon in
+        // Two-phase filter:
+        // 1) Fast pass: commonness + abbreviations prefix only (no full-text contains)
+        // 2) If empty and query is non-empty, fallback to full-text contains on names
+        func withinCommonness(_ taxon: Taxon) -> Bool {
             if let minC = minCommonness, let maxC = maxCommonness, let c = taxon.commonness, (c < minC || c > maxC) { return false }
+            return true
+        }
+        var filtered = species.filter { taxon in
+            guard withinCommonness(taxon) else { return false }
             if trimmed.isEmpty { return true }
             if taxon.abbreviations.contains(where: { $0.lowercased().hasPrefix(needle) }) { return true }
-            return taxon.commonName.lowercased().contains(needle) || taxon.scientificName.lowercased().contains(needle)
+            return false
+        }
+        if filtered.isEmpty && !trimmed.isEmpty {
+            filtered = species.filter { taxon in
+                guard withinCommonness(taxon) else { return false }
+                if taxon.abbreviations.contains(where: { $0.lowercased().hasPrefix(needle) }) { return true }
+                return taxon.commonName.lowercased().contains(needle) || taxon.scientificName.lowercased().contains(needle)
+            }
         }
         // Then sort by derived order with a recency bucket:
         // 1) Species seen in the last 24h are always at the bottom, ordered older→newer so the most recent are last.
