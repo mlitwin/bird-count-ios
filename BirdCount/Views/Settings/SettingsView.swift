@@ -32,16 +32,6 @@ struct SettingsView: View {
                         )
                     }
                 }
-                Section("Feedback") {
-                    Toggle("Haptics", isOn: binding(\.enableHaptics))
-                }
-                Section("Appearance") {
-                    Picker("Theme", selection: binding(\.darkModeOverride)) {
-                        ForEach(SettingsStore.DarkModeOverride.allCases) { m in
-                            Text(label(for: m)).tag(m)
-                        }
-                    }
-                }
                 Section("Data") {
                     Button(role: .destructive) { confirmClear = true } label: { Text("Clear all counts") }
                 }
@@ -60,10 +50,6 @@ struct SettingsView: View {
                 Text("This will reset every species' count to zero. This cannot be undone.")
             }
         }
-    }
-
-    private func label(for mode: SettingsStore.DarkModeOverride) -> String {
-        switch mode { case .system: return "System"; case .light: return "Light"; case .dark: return "Dark" }
     }
 
     private func labelForChecklist(_ id: String) -> String {

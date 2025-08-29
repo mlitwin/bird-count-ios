@@ -11,19 +11,17 @@ import Observation
 
     // User-adjustable settings with default values
 
-    var enableHaptics: Bool = true { didSet { persistIfReady() } }
-    var darkModeOverride: DarkModeOverride = .system { didSet { persistIfReady() } }
+    // Removed: feedback and appearance settings
     // Checklist related
     var selectedChecklistId: String? = nil { didSet { persistIfReady() } }
     var minCommonness: Int = 0 { didSet { normalizeRanges(changed: .min) } }
     var maxCommonness: Int = 3 { didSet { normalizeRanges(changed: .max) } }
 
-    enum DarkModeOverride: String, CaseIterable, Identifiable, Codable { case system, light, dark; var id: String { rawValue } }
+    // Removed: DarkModeOverride
 
     init() {
         let defaults = UserDefaults.standard
-        if let v = defaults.object(forKey: Self.key("enableHaptics")) as? Bool { enableHaptics = v }
-        if let raw = defaults.string(forKey: Self.key("darkModeOverride")), let m = DarkModeOverride(rawValue: raw) { darkModeOverride = m }
+    // Removed: enableHaptics, darkModeOverride
         if let raw = defaults.string(forKey: Self.key("selectedChecklistId")), !raw.isEmpty { selectedChecklistId = raw }
         if defaults.object(forKey: Self.key("minCommonness")) != nil { minCommonness = defaults.integer(forKey: Self.key("minCommonness")) }
         if defaults.object(forKey: Self.key("maxCommonness")) != nil { maxCommonness = defaults.integer(forKey: Self.key("maxCommonness")) }
@@ -51,8 +49,7 @@ import Observation
     private func persistIfReady() { if !initializing { persist() } }
     private func persist() {
         let d = UserDefaults.standard
-        d.set(enableHaptics, forKey: Self.key("enableHaptics"))
-        d.set(darkModeOverride.rawValue, forKey: Self.key("darkModeOverride"))
+    // Removed: enableHaptics, darkModeOverride
         d.set(selectedChecklistId ?? "", forKey: Self.key("selectedChecklistId"))
         d.set(minCommonness, forKey: Self.key("minCommonness"))
         d.set(maxCommonness, forKey: Self.key("maxCommonness"))
