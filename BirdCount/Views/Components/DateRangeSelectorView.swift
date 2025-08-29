@@ -52,34 +52,34 @@ public struct DateRangeSelectorView: View {
                     .controlSize(.small)
 
                 Spacer()
-
-                // Custom opens sheet
-                Button("Custom") {
-                    previousPreset = preset
-                    preset = .custom
-                    showCustomSheet = true
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.small)
             }
 
             // Text representation of the current date range (prominent)
-            Text(rangeSummary)
-                .font(.headline.weight(.semibold))
-                .foregroundStyle(.primary)
-                .padding(.vertical, 8)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .background(
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(Color(.secondarySystemBackground))
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .strokeBorder(Color.gray.opacity(0.2))
-                )
-                .lineLimit(1)
-                .minimumScaleFactor(0.9)
-                .allowsTightening(true)
+            Button(action: {
+                previousPreset = preset
+                preset = .custom
+                showCustomSheet = true
+            }) {
+                Text(rangeSummary)
+                    .font(.headline.weight(.semibold))
+                    .foregroundStyle(.tint)
+                    .padding(.vertical, 8)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .background(
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .fill(Color(.secondarySystemBackground))
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .strokeBorder(Color.gray.opacity(0.2))
+                    )
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.9)
+                    .allowsTightening(true)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Custom range")
         }
         .sheet(isPresented: $showCustomSheet) {
             CustomRangeSheet(startDate: $startDate, endDate: $endDate, onCancel: {
