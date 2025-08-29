@@ -18,7 +18,7 @@ struct SpeciesListView: View {
         GeometryReader { proxy in
             ScrollViewReader { reader in
                 ScrollView {
-                    LazyVStack(spacing: 0) {
+                    LazyVStack(spacing: 6) {
                         ForEach(taxa) { taxon in
                             VStack(spacing: 0) {
                                 HStack(alignment: .center, spacing: 12) {
@@ -44,7 +44,7 @@ struct SpeciesListView: View {
                                 .contentShape(Rectangle())
                                 .onTapGesture { onSelect(taxon) }
                                 .padding(.horizontal)
-                                .padding(.vertical, 6)
+                                .padding(.vertical, 12)
                                 Divider()
                             }
                         }
@@ -75,7 +75,7 @@ private struct SpeciesRowBasic: View {
     let taxon: Taxon
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(taxon.commonName)
                     .font(.title3.weight(.semibold))
                 Text(taxon.scientificName)
