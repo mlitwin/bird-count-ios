@@ -5,6 +5,8 @@ struct OnScreenKeyboard: View {
     let onBackspace: () -> Void
     let onClear: () -> Void
 
+    // Always active on Home; keep as a parameter for flexibility
+    var active: Bool = true
     private let rows: [[String]] = [
         ["Q","W","E","R","T","Y","U","I","O","P"],
         ["A","S","D","F","G","H","J","K","L"],
@@ -16,17 +18,26 @@ struct OnScreenKeyboard: View {
             ForEach(rows.indices, id: \.self) { r in
                 HStack(spacing: 6) {
                     ForEach(rows[r], id: \.self) { key in
-                        KeyButton(label: key, flex: true) { onKey(key.lowercased()) }
+                        KeyButton(label: key, flex: true, active: active) { onKey(key.lowercased()) }
                     }
                     if r == rows.count - 1 {
                         // Include action keys in-row so all keys share equal width
-                        KeyButton(symbol: "delete.left.fill", flex: true, role: .destructive) { onBackspace() }
-                        KeyButton(symbol: "xmark.circle", flex: true) { onClear() }
+                        KeyButton(symbol: "delete.left.fill", flex: true, role: .destructive, active: active) { onBackspace() }
+                        KeyButton(symbol: "xmark.circle", flex: true, active: active) { onClear() }
                     }
                 }
             }
         }
         .padding(.horizontal, 10)
+        // Slight active halo around the keyboard area
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color.clear)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .stroke(active ? Color.accentColor.opacity(0.25) : .clear, lineWidth: 1)
+        )
     }
 }
 
@@ -36,6 +47,7 @@ private struct KeyButton: View {
     var width: CGFloat? = nil
     var flex: Bool = false
     var role: ButtonRole? = nil
+    var active: Bool = true
     let action: () -> Void
 
     var body: some View {
@@ -57,7 +69,11 @@ private struct KeyButton: View {
         .frame(maxWidth: flex ? .infinity : (width ?? 34))
         .background(
             RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .fill(Color(.tertiarySystemFill))
+                .fill(active ? Color.accentColor.opacity(0.08) : Color(.tertiarySystemFill))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .stroke(active ? Color.accentColor.opacity(0.2) : .clear, lineWidth: 1)
         )
     }
 }

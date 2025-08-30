@@ -13,6 +13,7 @@ struct HomeView: View {
     @State private var selectedTaxon: Taxon? = nil
     @State private var bottomControlsHeight: CGFloat = 0
     @State private var sheetContentHeight: CGFloat = 0
+    @State private var filterFocused: Bool = false
     // Keep CountAdjustSheet aligned with SpeciesListView bottom
     private let speciesListBottomPadding: CGFloat = 48
 
@@ -33,11 +34,24 @@ struct HomeView: View {
                 // Bottom controls (FilterBar + Keyboard) measured dynamically for sheet positioning
                 VStack(spacing: 0) {
                     Divider()
-                    FilterBar(text: filterText) { filterText = "" }
+                    FilterBar(
+                        text: filterText,
+                        onClear: { filterText = ""; filterFocused = false },
+                        active: (filterFocused || !filterText.isEmpty)
+                    )
+                        .onTapGesture { filterFocused = true }
                         .padding(.horizontal)
                         .padding(.vertical, 8)
                     Divider()
-                    OnScreenKeyboard(onKey: { filterText.append($0) }, onBackspace: { if !filterText.isEmpty { _ = filterText.removeLast() } }, onClear: { filterText = "" })
+                    OnScreenKeyboard(
+                        onKey: { filterText.append($0); filterFocused = true },
+                        onBackspace: {
+                            if !filterText.isEmpty { _ = filterText.removeLast() }
+                            filterFocused = !filterText.isEmpty
+                        },
+                        onClear: { filterText = ""; filterFocused = false },
+                        active: (filterFocused || !filterText.isEmpty)
+                    )
                         .padding(.bottom, 8)
                         .background(.thinMaterial)
                 }
@@ -48,6 +62,10 @@ struct HomeView: View {
                     }
                 )
                 .onPreferenceChange(BottomControlsHeightKey.self) { bottomControlsHeight = $0 }
+                // If the filter text becomes empty (via clear or programmatic), deactivate the visual focus state
+                .onChange(of: filterText) { _, newValue in
+                    if newValue.isEmpty { filterFocused = false }
+                }
             }
             
             // Hide the nav bar entirely so it doesn't reserve space at the top
@@ -68,7 +86,12 @@ struct HomeView: View {
                         ZStack(alignment: .bottom) {
                             Color.black.opacity(0.25)
                                 .ignoresSafeArea()
-                                .onTapGesture { withAnimation(.spring(response: 0.3, dampingFraction: 0.9)) { selectedTaxon = nil } }
+                                .onTapGesture {
+                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.9)) {
+                                        selectedTaxon = nil
+                                        filterFocused = false
+                                    }
+                                }
 
                             VStack(spacing: 0) {
                                 CountAdjustSheet(
@@ -133,7 +156,7 @@ struct HomeView: View {
 private struct BottomControlsHeightKey: PreferenceKey {
     static var defaultValue: CGFloat = 0
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value = max(value, nextValue())
+    value = Swift.max(value, nextValue())
     }
 }
 
@@ -153,6 +176,7 @@ private struct SheetContentHeightKey: PreferenceKey {
 private struct FilterBar: View {
     let text: String
     let onClear: () -> Void
+    var active: Bool = false
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
@@ -171,7 +195,11 @@ private struct FilterBar: View {
         .padding(10)
         .background(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(Color(.secondarySystemBackground))
+                .fill(Color.accentColor.opacity(active ? 0.16 : 0.08))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .stroke(Color.accentColor.opacity(active ? 0.6 : 0.3), lineWidth: 1)
         )
     }
 }
