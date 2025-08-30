@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 public enum DateRangePreset: String, CaseIterable, Identifiable {
     case lastHour = "Last Hour"
@@ -95,6 +96,11 @@ public struct DateRangeSelectorView: View {
     // Keep preset in sync if range equals the Today preset values (via chevrons or custom sheet)
     .onChange(of: startDate) { _, _ in syncPresetWithCurrentRange() }
     .onChange(of: endDate) { _, _ in syncPresetWithCurrentRange() }
+    // Auto-update when the calendar day changes while the app is active
+    .onReceive(NotificationCenter.default.publisher(for: .NSCalendarDayChanged)) { _ in
+        syncPresetWithCurrentRange()
+    }
+    .onAppear { syncPresetWithCurrentRange() }
     }
 
     private func applyRangePreset(_ p: DateRangePreset) {
@@ -189,6 +195,9 @@ private extension DateRangeSelectorView {
         let todayEnd = cal.date(byAdding: .day, value: 1, to: todayStart) ?? todayStart
         if startDate == todayStart && endDate == todayEnd {
             if preset != .today { preset = .today }
+        } else if preset == .today {
+            // If the range no longer equals today's boundaries, deselect Today
+            preset = .custom
         }
     }
 }

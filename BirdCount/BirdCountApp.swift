@@ -21,9 +21,9 @@ private struct TopTabsRoot: View {
     @State private var selection: Tab = .home
     @State private var showSettings: Bool = false
     // Shared date range across screens
-    @State private var preset: DateRangePreset = .custom
-    @State private var startDate: Date = Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date()
-    @State private var endDate: Date = Date()
+    @State private var preset: DateRangePreset = .today
+    @State private var startDate: Date = Calendar.current.startOfDay(for: Date())
+    @State private var endDate: Date = Calendar.current.date(byAdding: .day, value: 1, to: Calendar.current.startOfDay(for: Date())) ?? Date()
 
     var body: some View {
         VStack(spacing: 0) {
