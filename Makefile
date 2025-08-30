@@ -1,4 +1,4 @@
-.PHONY: help generate test list-dests simulators core-test
+.PHONY: help generate test list-dests simulators core-test prep-beta fastlane-beta
 
 # Configurable variables
 SCHEME ?= BirdCount
@@ -17,6 +17,7 @@ help:
 	@echo "  core-test  Build and run macOS unit tests for pure Swift logic (no Simulator)"
 	@echo "  list-dests Show valid destinations for the scheme (useful for -destination)"
 	@echo "  simulators List available Booted/Shutdown simulators via simctl"
+	@echo "  prep-beta  Bump CFBundleVersion in project.yml and regenerate the Xcode project"
 	@echo "Variables (override with VAR=value): SCHEME, PROJECT, SIMULATOR, DEST, CONFIGURATION"
 
 # Regenerate the Xcode project from project.yml
@@ -52,3 +53,8 @@ core-test:
 
 fastlane-beta:
 	op run --env-file apple.env -- bundle exec fastlane beta
+
+prep-beta:
+	@./scripts/bump-build.sh
+	@$(MAKE) generate
+
