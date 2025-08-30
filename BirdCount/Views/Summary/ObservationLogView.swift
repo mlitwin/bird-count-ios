@@ -17,7 +17,7 @@ struct ObservationLogView: View {
     private func buildDisplay() -> [ObservationRecord] {
         let all = observationsStore.observations
         // Keep original records (with children) and just sort by begin
-        return all.sorted { $0.begin < $1.begin }
+        return all.sorted { $0.begin > $1.begin }
     }
 
 
