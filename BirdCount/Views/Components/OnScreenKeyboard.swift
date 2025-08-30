@@ -7,6 +7,12 @@ struct OnScreenKeyboard: View {
 
     // Always active on Home; keep as a parameter for flexibility
     var active: Bool = true
+    // Built-in bottom spacing so the keyboard doesn't feel cramped against edges
+    var bottomPadding: CGFloat = 8
+    // A bit of space above the top row
+    var topPadding: CGFloat = 8
+    // Vertical spacing between rows of keys
+    var rowSpacing: CGFloat = 10
     private let rows: [[String]] = [
         ["Q","W","E","R","T","Y","U","I","O","P"],
         ["A","S","D","F","G","H","J","K","L"],
@@ -14,7 +20,7 @@ struct OnScreenKeyboard: View {
     ]
 
     var body: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: rowSpacing) {
             ForEach(rows.indices, id: \.self) { r in
                 HStack(spacing: 6) {
                     ForEach(rows[r], id: \.self) { key in
@@ -28,11 +34,13 @@ struct OnScreenKeyboard: View {
                 }
             }
         }
-        .padding(.horizontal, 10)
+    .padding(.horizontal, 10)
+    .padding(.top, topPadding)
+    .padding(.bottom, bottomPadding)
         // Slight active halo around the keyboard area
         .background(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(Color.clear)
+                .fill(Color(.secondarySystemBackground))
         )
         .overlay(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
@@ -69,7 +77,10 @@ private struct KeyButton: View {
         .frame(maxWidth: flex ? .infinity : (width ?? 34))
         .background(
             RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .fill(active ? Color.accentColor.opacity(0.08) : Color(.tertiarySystemFill))
+                .fill(
+                    // Letter keys: white; action/symbol keys: deeper gray for stronger contrast
+                    label != nil ? Color.white : Color(.secondarySystemFill)
+                )
         )
         .overlay(
             RoundedRectangle(cornerRadius: 8, style: .continuous)
