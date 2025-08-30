@@ -1,7 +1,17 @@
 import SwiftUI
+import UIKit
 
 @main
 struct BirdCountApp: App {
+    init() {
+        // Enlarge segmented control text globally
+        let seg = UISegmentedControl.appearance()
+        let attrs: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 17, weight: .semibold)
+        ]
+        seg.setTitleTextAttributes(attrs, for: .normal)
+        seg.setTitleTextAttributes(attrs, for: .selected)
+    }
     @State private var taxonomyStore = TaxonomyStore()
     @State private var observationStore = ObservationStore()
     @State private var settingsStore = SettingsStore() // Added settings store
@@ -30,9 +40,11 @@ private struct TopTabsRoot: View {
             // Top tab selector with a separated Settings button on the right
             HStack(alignment: .center, spacing: 12) {
                 Picker("", selection: $selection) {
-                    ForEach(Tab.allCases) { tab in Text(tab.rawValue).tag(tab) }
+                    ForEach(Tab.allCases) { tab in Text(tab.rawValue).font(.headline).tag(tab) }
                 }
                 .pickerStyle(.segmented)
+                .controlSize(.large)
+                .padding(.vertical, 6)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 // Gap is provided by Spacer; adjust minLength to tweak visual separation
