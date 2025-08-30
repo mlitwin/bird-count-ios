@@ -33,10 +33,12 @@ public struct DateRangeSelectorView: View {
                 .buttonStyle(.bordered)
                 .controlSize(.small)
 
-                // Today preset
+                // Today preset (visually indicate selection via tint/weight)
                 Button("Today") { applyRangePreset(.today); preset = .today }
                     .buttonStyle(.bordered)
                     .controlSize(.small)
+                    .tint(preset == .today ? .accentColor : .primary)
+                    .fontWeight(preset == .today ? .semibold : .regular)
 
                 // Shift range one day forward
                 Button(action: { shiftRangeByDays(1); preset = .custom }) {
@@ -90,6 +92,9 @@ public struct DateRangeSelectorView: View {
                 preset = .custom
             })
         }
+    // Keep preset in sync if range equals the Today preset values (via chevrons or custom sheet)
+    .onChange(of: startDate) { _, _ in syncPresetWithCurrentRange() }
+    .onChange(of: endDate) { _, _ in syncPresetWithCurrentRange() }
     }
 
     private func applyRangePreset(_ p: DateRangePreset) {
@@ -119,6 +124,7 @@ public struct DateRangeSelectorView: View {
         let newEnd = cal.date(byAdding: .day, value: days, to: endDate) ?? endDate
         startDate = newStart
         endDate = max(newStart, newEnd)
+    syncPresetWithCurrentRange()
     }
 
     // Summary string for the currently selected range (compact, likely to fit one line)
@@ -172,6 +178,18 @@ public struct DateRangeSelectorView: View {
             df.setLocalizedDateFormatFromTemplate("MMMdyyyy") // e.g., Aug 14, 2025
             return df
         }()
+    }
+}
+
+// MARK: - Preset sync helpers
+private extension DateRangeSelectorView {
+    func syncPresetWithCurrentRange() {
+        let cal = Calendar.current
+        let todayStart = cal.startOfDay(for: Date())
+        let todayEnd = cal.date(byAdding: .day, value: 1, to: todayStart) ?? todayStart
+        if startDate == todayStart && endDate == todayEnd {
+            if preset != .today { preset = .today }
+        }
     }
 }
 
