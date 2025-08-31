@@ -20,7 +20,8 @@ struct HomeView: View {
     private var filtered: [Taxon] { taxonomy.search(filterText, minCommonness: settings.selectedChecklistId != nil ? settings.minCommonness : nil, maxCommonness: settings.selectedChecklistId != nil ? settings.maxCommonness : nil) }
 
     var body: some View {
-        VStack(spacing: 0) {
+        NavigationStack {
+            VStack(spacing: 0) {
                 if let checklistErr = taxonomy.checklistError {
                     Text(checklistErr)
                         .font(.caption)
@@ -66,6 +67,10 @@ struct HomeView: View {
                     if newValue.isEmpty { filterFocused = false }
                 }
             }
+            
+            // Hide the nav bar entirely so it doesn't reserve space at the top
+            .toolbar(.hidden, for: .navigationBar)
+            .toolbarBackground(.hidden, for: .navigationBar)
             .onAppear { ObservationStoreProxy.shared.register(observations) }
             .onChange(of: settings.selectedChecklistId) { _, newId in
                 if let id = newId { taxonomy.loadChecklist(id: id) }
@@ -126,6 +131,7 @@ struct HomeView: View {
                 }
             }
             .zIndex(selectedTaxon != nil ? 1 : 0)
+        }
     }
 
     @ViewBuilder private var content: some View {
@@ -142,6 +148,8 @@ struct HomeView: View {
             }
         }
     }
+
+        // Removed keyboard toggle button
 }
 
 // PreferenceKey for measuring bottom controls height dynamically

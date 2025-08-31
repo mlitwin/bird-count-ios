@@ -11,21 +11,6 @@ struct BirdCountApp: App {
         ]
         seg.setTitleTextAttributes(attrs, for: .normal)
         seg.setTitleTextAttributes(attrs, for: .selected)
-
-    // Make navigation bars opaque by default
-    let navAppearance = UINavigationBarAppearance()
-    navAppearance.configureWithOpaqueBackground()
-    UINavigationBar.appearance().standardAppearance = navAppearance
-    UINavigationBar.appearance().scrollEdgeAppearance = navAppearance
-    UINavigationBar.appearance().compactAppearance = navAppearance
-    UINavigationBar.appearance().isTranslucent = false
-
-    // Make tab bars opaque so content is inset above them
-    let tabAppearance = UITabBarAppearance()
-    tabAppearance.configureWithOpaqueBackground()
-    UITabBar.appearance().standardAppearance = tabAppearance
-    UITabBar.appearance().scrollEdgeAppearance = tabAppearance
-    UITabBar.appearance().isTranslucent = false
     }
     @State private var taxonomyStore = TaxonomyStore()
     @State private var observationStore = ObservationStore()
@@ -33,7 +18,7 @@ struct BirdCountApp: App {
 
     var body: some Scene {
         WindowGroup {
-            TabsRoot()
+            TopTabsRoot()
             .environment(taxonomyStore)
             .environment(observationStore)
             .environment(settingsStore) // inject settings
@@ -41,8 +26,8 @@ struct BirdCountApp: App {
     }
 }
 
-private struct TabsRoot: View {
-    private enum Tab: String, CaseIterable, Identifiable, Hashable { case home = "Home", summary = "Summary", log = "Log"; var id: String { rawValue } }
+private struct TopTabsRoot: View {
+    private enum Tab: String, CaseIterable, Identifiable { case home = "Home", summary = "Summary", log = "Log"; var id: String { rawValue } }
     @State private var selection: Tab = .home
     @State private var showSettings: Bool = false
     // Shared date range across screens
@@ -51,57 +36,42 @@ private struct TabsRoot: View {
     @State private var endDate: Date = Calendar.current.date(byAdding: .day, value: 1, to: Calendar.current.startOfDay(for: Date())) ?? Date()
 
     var body: some View {
-        TabView(selection: $selection) {
-            NavigationStack {
-                HomeView(preset: $preset, startDate: $startDate, endDate: $endDate)
-                    .navigationTitle("Home")
-                    .navigationBarTitleDisplayMode(.inline)
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: { showSettings = true }) {
-                        Image(systemName: "gearshape")
-                    }
-                    .accessibilityLabel("Settings")
+        VStack(spacing: 0) {
+            // Top tab selector with a separated Settings button on the right
+            HStack(alignment: .center, spacing: 12) {
+                Picker("", selection: $selection) {
+                    ForEach(Tab.allCases) { tab in Text(tab.rawValue).font(.headline).tag(tab) }
                 }
-            }
-            .toolbarBackground(.visible, for: .navigationBar)
-            .tabItem { Label("Home", systemImage: "house") }
-            .tag(Tab.home)
+                .pickerStyle(.segmented)
+                .controlSize(.large)
+                .padding(.vertical, 6)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
-            NavigationStack {
-                SummaryView(preset: $preset, startDate: $startDate, endDate: $endDate)
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: { showSettings = true }) {
-                        Image(systemName: "gearshape")
-                    }
-                    .accessibilityLabel("Settings")
-                }
-            }
-            .toolbarBackground(.visible, for: .navigationBar)
-            .tabItem { Label("Summary", systemImage: "chart.bar") }
-            .tag(Tab.summary)
+                // Gap is provided by Spacer; adjust minLength to tweak visual separation
+                Spacer(minLength: 24)
 
-            NavigationStack {
-                ObservationLogView(preset: $preset, startDate: $startDate, endDate: $endDate)
+                Button(action: { showSettings = true }) {
+                    Image(systemName: "gearshape")
+                        .font(.headline)
+                        .padding(8)
+                        .background(Circle().fill(Color(.secondarySystemBackground)))
+                }
+                .accessibilityLabel("Settings")
             }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: { showSettings = true }) {
-                        Image(systemName: "gearshape")
-                    }
-                    .accessibilityLabel("Settings")
+            .padding(.horizontal)
+            .padding(.top, 8)
+
+            Divider()
+
+            // Content
+            Group {
+                switch selection {
+                case .home: HomeView(preset: $preset, startDate: $startDate, endDate: $endDate)
+                case .summary: SummaryView(preset: $preset, startDate: $startDate, endDate: $endDate)
+                case .log: ObservationLogView(preset: $preset, startDate: $startDate, endDate: $endDate)
                 }
             }
-            .toolbarBackground(.visible, for: .navigationBar)
-            .tabItem { Label("Log", systemImage: "list.bullet") }
-            .tag(Tab.log)
         }
-        .toolbarBackground(.visible, for: .tabBar)
         .sheet(isPresented: $showSettings) { SettingsView(show: $showSettings) }
-
     }
 }
-

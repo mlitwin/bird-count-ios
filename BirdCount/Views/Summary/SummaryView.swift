@@ -92,7 +92,8 @@ struct SummaryView: View {
     let species = speciesInRange
     let totalSpeciesInRange = species.count
     let totalIndividualsInRange = species.reduce(0) { $0 + $1.count }
-    return VStack(spacing: 0) {
+        return NavigationStack {
+            VStack(spacing: 0) {
                 // Compact header row: Title + Share
                 HStack(spacing: 12) {
                     Text("Summary")
@@ -139,7 +140,10 @@ struct SummaryView: View {
                 .listStyle(.insetGrouped)
                 .scrollBounceBehavior(.basedOnSize)
             }
+            .toolbar(.hidden, for: .navigationBar)
+                .toolbarBackground(.hidden, for: .navigationBar)
             .sheet(isPresented: $shareSheet) { ShareActivityView(items: [exportText()]) }
+        }
     }
 
     private func exportText() -> String {
