@@ -25,7 +25,6 @@ struct BirdCountApp: App {
         }
     }
 }
-
 private struct TopTabsRoot: View {
     private enum Tab: String, CaseIterable, Identifiable { case home = "Home", summary = "Summary", log = "Log"; var id: String { rawValue } }
     @State private var selection: Tab = .home
@@ -37,19 +36,13 @@ private struct TopTabsRoot: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Top tab selector with a separated Settings button on the right
-            HStack(alignment: .center, spacing: 12) {
-                Picker("", selection: $selection) {
-                    ForEach(Tab.allCases) { tab in Text(tab.rawValue).font(.headline).tag(tab) }
-                }
-                .pickerStyle(.segmented)
-                .controlSize(.large)
-                .padding(.vertical, 6)
-                .frame(maxWidth: .infinity, alignment: .leading)
-
-                // Gap is provided by Spacer; adjust minLength to tweak visual separation
-                Spacer(minLength: 24)
-
+            // Top bar: centered title with trailing Settings button
+            ZStack {
+                Text("Bird Count")
+                    .font(.title2.weight(.semibold))
+            }
+            .frame(maxWidth: .infinity)
+            .overlay(alignment: .trailing) {
                 Button(action: { showSettings = true }) {
                     Image(systemName: "gearshape")
                         .font(.headline)
@@ -63,13 +56,19 @@ private struct TopTabsRoot: View {
 
             Divider()
 
-            // Content
-            Group {
-                switch selection {
-                case .home: HomeView(preset: $preset, startDate: $startDate, endDate: $endDate)
-                case .summary: SummaryView(preset: $preset, startDate: $startDate, endDate: $endDate)
-                case .log: ObservationLogView(preset: $preset, startDate: $startDate, endDate: $endDate)
-                }
+            // Content under top tabs: bottom TabView for Home/Summary/Log
+            TabView(selection: $selection) {
+                HomeView(preset: $preset, startDate: $startDate, endDate: $endDate)
+                    .tabItem { Label("Home", systemImage: "house") }
+                    .tag(Tab.home)
+
+                SummaryView(preset: $preset, startDate: $startDate, endDate: $endDate)
+                    .tabItem { Label("Summary", systemImage: "chart.bar") }
+                    .tag(Tab.summary)
+
+                ObservationLogView(preset: $preset, startDate: $startDate, endDate: $endDate)
+                    .tabItem { Label("Log", systemImage: "list.bullet") }
+                    .tag(Tab.log)
             }
         }
         .sheet(isPresented: $showSettings) { SettingsView(show: $showSettings) }
