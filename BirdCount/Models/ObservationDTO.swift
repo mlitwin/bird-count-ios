@@ -1,7 +1,7 @@
 import Foundation
 
 /// A plain data struct for serialization, containing only the core fields (no children).
-public struct ObservationRecordData: Identifiable, Codable, Equatable {
+public struct ObservationRecordDTO: Identifiable, Codable, Equatable {
     public let id: UUID
     public var parentId: UUID?
     public let taxonId: String
