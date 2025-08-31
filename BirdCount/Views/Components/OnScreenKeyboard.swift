@@ -71,20 +71,42 @@ private struct KeyButton: View {
             .frame(maxWidth: flex ? .infinity : nil)
             .contentShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         }
-        .buttonStyle(.plain)
-        .padding(.vertical, 4)
-        .frame(height: 46)
-        .frame(maxWidth: flex ? .infinity : (width ?? 34))
-        .background(
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .fill(
-                    // Letter keys: white; action/symbol keys: deeper gray for stronger contrast
-                    label != nil ? Color.white : Color(.secondarySystemFill)
-                )
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .stroke(active ? Color.accentColor.opacity(0.2) : .clear, lineWidth: 1)
-        )
+        // Visible pressed feedback via custom style (highlight + slight scale)
+        .buttonStyle(KeyCapsStyle(active: active, isAction: label == nil, flex: flex, explicitWidth: width))
+    }
+}
+
+// MARK: - Button style for visible pressed feedback
+private struct KeyCapsStyle: ButtonStyle {
+    var active: Bool
+    var isAction: Bool // true for symbol/action keys
+    var flex: Bool
+    var explicitWidth: CGFloat?
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            // Base sizing similar to original
+            .padding(.vertical, 4)
+            .frame(height: 46)
+            .frame(maxWidth: flex ? .infinity : (explicitWidth ?? 34))
+            // Background fill (white for letters, secondary fill for action keys)
+            .background(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill((isAction ? Color(.secondarySystemFill) : .white)
+                        .opacity(configuration.isPressed ? 0.92 : 1.0))
+            )
+            // Pressed highlight overlay
+            .overlay(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(Color.accentColor.opacity(configuration.isPressed ? 0.15 : 0))
+            )
+            // Border accent changes slightly when pressed
+            .overlay(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .stroke(active ? Color.accentColor.opacity(configuration.isPressed ? 0.35 : 0.2) : .clear, lineWidth: 1)
+            )
+            // Subtle scale for tactile feel
+            .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
+            .animation(.easeOut(duration: 0.08), value: configuration.isPressed)
     }
 }
