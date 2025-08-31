@@ -22,7 +22,23 @@ struct ObservationLogView: View {
 
 
     var body: some View {
-        NavigationStack {
+        VStack(spacing: 0) {
+            // Compact header row: optional Close (when presented as sheet) + right-aligned Share
+            HStack(spacing: 12) {
+                if let show = show {
+                    Button("Close") { show.wrappedValue = false }
+                }
+                Spacer()
+                Button(action: { exportSheet = true }) {
+                    Label("Share", systemImage: "square.and.arrow.up")
+                }
+                .disabled(display.isEmpty)
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+            }
+            .padding(.horizontal)
+            .padding(.vertical, 8)
+
             List(display) { rec in
                 ObservationRecordView(record: rec)
                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
@@ -41,17 +57,8 @@ struct ObservationLogView: View {
                         }
                     }
             }
-        
-        .toolbar {
-                if let show = show {
-                    ToolbarItem(placement: .cancellationAction) { Button("Close") { show.wrappedValue = false } }
-                }
-                ToolbarItem(placement: .primaryAction) { Button("Export") { exportSheet = true }.disabled(display.isEmpty) }
-            }
-        .sheet(isPresented: $exportSheet) { ShareActivityView(items: [exportText()]) }
-        .toolbar(.hidden, for: .navigationBar)
-        .toolbarBackground(.hidden, for: .navigationBar)
         }
+        .sheet(isPresented: $exportSheet) { ShareActivityView(items: [exportText()]) }
     }
 
     private func exportText() -> String {
