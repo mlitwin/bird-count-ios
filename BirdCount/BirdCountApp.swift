@@ -53,6 +53,7 @@ private struct TopTabsRoot: View {
             }
             .padding(.horizontal)
             .padding(.top, 8)
+            .padding(.bottom, 8)
 
             Divider()
 
