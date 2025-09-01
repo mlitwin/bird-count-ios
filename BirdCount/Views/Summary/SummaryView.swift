@@ -26,17 +26,6 @@ struct SummaryView: View {
         let count: Int
     }
 
-    // applyRangePreset is handled inside DateRangeSelectorView
-
-    private var observedSpecies: [(Taxon, Int)] {
-        taxonomy.species
-            .compactMap { t in
-                let c = observations.count(for: t.id)
-                return c > 0 ? (t, c) : nil
-            }
-            .sorted { $0.0.commonName < $1.0.commonName }
-    }
-
     private var speciesInRange: [SpeciesCountItem] {
         // Aggregate counts within the selected range (dynamic for relative presets)
         // Respect child observations by flattening the tree and summing each node that overlaps the range.
@@ -147,12 +136,13 @@ struct SummaryView: View {
     }
 
     private func exportText() -> String {
+        let species = speciesInRange
         var lines: [String] = []
         lines.append("Bird Count Summary")
-        lines.append("Species observed: \(observations.totalSpeciesObserved)")
-        lines.append("Total individuals: \(observations.totalIndividuals)")
+        lines.append("Species observed: \(species.count)")
+        lines.append("Total individuals: \(species.reduce(0) { $0 + $1.count })")
         lines.append("")
-        for (taxon, count) in observedSpecies { lines.append("\(taxon.commonName)\t\(count)") }
+        for item in species { lines.append("\(item.taxon.commonName)\t\(item.count)") }
         return lines.joined(separator: "\n")
     }
 }
