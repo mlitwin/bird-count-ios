@@ -1,17 +1,6 @@
 import SwiftUI
 
 struct SummaryView: View {
-    @Environment(ObservationStore.self) private var observations
-    @Environment(TaxonomyStore.self) private var taxonomy
-    @State private var shareSheet: Bool = false
-    @State private var showLog: Bool = false
-    // Range filter (provided from parent/top-level)
-    @Binding var preset: DateRangePreset
-    @Binding var startDate: Date
-    @Binding var endDate: Date
-
-    // DateRangePreset moved to Components/DateRangeSelectorView.swift
-
     // Lightweight models to simplify ForEach and type inference
     private struct UpdateItem: Identifiable {
         let id: String // taxon.id
@@ -75,6 +64,16 @@ struct SummaryView: View {
             return (startDate, endDate)
         }
     }
+    @Environment(ObservationStore.self) private var observations
+    @Environment(TaxonomyStore.self) private var taxonomy
+    @State private var shareSheet: Bool = false
+    @State private var includeCounts: Bool = false
+    @State private var showLog: Bool = false
+    // Range filter (provided from parent/top-level)
+    @Binding var preset: DateRangePreset
+    @Binding var startDate: Date
+    @Binding var endDate: Date
+    // ...existing code...
 
     var body: some View {
         // Break up inference with local constants
@@ -131,18 +130,33 @@ struct SummaryView: View {
             }
             .toolbar(.hidden, for: .navigationBar)
                 .toolbarBackground(.hidden, for: .navigationBar)
-            .sheet(isPresented: $shareSheet) { ShareActivityView(items: [exportText()]) }
+            .sheet(isPresented: $shareSheet) {
+                VStack(spacing: 16) {
+                    Toggle(isOn: $includeCounts) {
+                        Text("Include counts")
+                    }
+                    .padding(.horizontal)
+                    ShareActivityView(items: [exportText(includeCounts: includeCounts)])
+                }
+                .padding()
+            }
         }
     }
 
-    private func exportText() -> String {
+    private func exportText(includeCounts: Bool = false) -> String {
         let species = speciesInRange
         var lines: [String] = []
         lines.append("Bird Count Summary")
         lines.append("Species observed: \(species.count)")
         lines.append("Total individuals: \(species.reduce(0) { $0 + $1.count })")
         lines.append("")
-        for item in species { lines.append("\(item.taxon.commonName)\t\(item.count)") }
+        for item in species {
+            if includeCounts {
+                lines.append("\(item.taxon.commonName)\t\(item.count)")
+            } else {
+                lines.append("\(item.taxon.commonName)")
+            }
+        }
         return lines.joined(separator: "\n")
     }
 }
