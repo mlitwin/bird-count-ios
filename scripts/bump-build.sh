@@ -62,5 +62,5 @@ fi
 TAG="v${SHORT_VER}-${NEW_VAL}"
 
 # Commit current changes
-git commit -m "Bump CFBundleVersion: ${CURRENT} -> ${NEXT}"
+git commit -am "Bump CFBundleVersion: ${CURRENT} -> ${NEXT}"
 git tag -a "${TAG}" -m "Release ${SHORT_VER} (${NEW_VAL})"
