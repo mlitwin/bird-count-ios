@@ -3,6 +3,12 @@ set -euo pipefail
 
 YML_FILE="project.yml"
 
+# Test if there are any uncommitted changes
+if ! git diff --quiet; then
+  echo "Error: Uncommitted changes found in $(pwd)" >&2
+  exit 1
+fi
+
 if [[ ! -f "$YML_FILE" ]]; then
   echo "Error: $YML_FILE not found in $(pwd)" >&2
   exit 1
@@ -54,13 +60,7 @@ fi
 
 # Create git tag v<short>-<build> on current HEAD
 TAG="v${SHORT_VER}-${NEW_VAL}"
-if command -v git >/dev/null 2>&1 && git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  if git rev-parse -q --verify "refs/tags/${TAG}" >/dev/null 2>&1; then
-    echo "Tag ${TAG} already exists; skipping tag creation"
-  else
-    git tag -a "${TAG}" -m "Release ${SHORT_VER} (${NEW_VAL})"
-    echo "Created git tag: ${TAG}"
-  fi
-else
-  echo "Note: Not a git repository (or git unavailable); skipping tag creation"
-fi
+
+# Commit current changes
+git commit -m "Bump CFBundleVersion: ${CURRENT} -> ${NEXT}"
+git tag -a "${TAG}" -m "Release ${SHORT_VER} (${NEW_VAL})"
