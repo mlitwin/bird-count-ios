@@ -20,6 +20,7 @@
 		43633DA051B6ACEE6D0811D9 /* checklist-US-CA-041.json in Resources */ = {isa = PBXBuildFile; fileRef = AD12BB59D440BC995C372E0D /* checklist-US-CA-041.json */; };
 		47FB6008BE8519B9F446ECED /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 783AD92EE988689DEFC27F00 /* SettingsView.swift */; };
 		4A0CBA6ADFDFA1248CB506FF /* DateRangeSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C25DD49150A5BFFC25CD4BC /* DateRangeSelectorView.swift */; };
+		4B098C452221AB2EC7B2CC1E /* SyncFoundationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A86C473DA98BE0B448BBCB /* SyncFoundationTests.swift */; };
 		50EE06DA5183920B0950A212 /* Taxon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74ADC22819086097B12402BC /* Taxon.swift */; };
 		594E347B44CB9AE16D14A93F /* ObservationLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FCA969A738EAD7B00CC123B /* ObservationLogView.swift */; };
 		5B4143CF290C1B88ED929590 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DA21F8B7A04FA9A2B01542 /* HomeView.swift */; };
@@ -104,6 +105,7 @@
 		AD12BB59D440BC995C372E0D /* checklist-US-CA-041.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "checklist-US-CA-041.json"; sourceTree = "<group>"; };
 		BAE4346483A7FCF5504F471D /* ObservationStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationStoreTests.swift; sourceTree = "<group>"; };
 		BB13F58DAFB4B97D611643BD /* ObservationRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservationRecord.swift; sourceTree = "<group>"; };
+		C0A86C473DA98BE0B448BBCB /* SyncFoundationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncFoundationTests.swift; sourceTree = "<group>"; };
 		C3DA21F8B7A04FA9A2B01542 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		CA105FDD346A2759183A3BEE /* OnScreenKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnScreenKeyboard.swift; sourceTree = "<group>"; };
 		CAF79995B3B7FC149037EC4C /* ModelsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelsTests.swift; sourceTree = "<group>"; };
@@ -281,6 +283,7 @@
 			isa = PBXGroup;
 			children = (
 				905A41A6B9EC879EAD96F7CA /* BirdCountTests.swift */,
+				C0A86C473DA98BE0B448BBCB /* SyncFoundationTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -483,6 +486,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6219220B199141F94E4AF58A /* BirdCountTests.swift in Sources */,
+				4B098C452221AB2EC7B2CC1E /* SyncFoundationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
