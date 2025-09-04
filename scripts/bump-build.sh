@@ -61,6 +61,8 @@ fi
 # Create git tag v<short>-<build> on current HEAD
 TAG="v${SHORT_VER}-${NEW_VAL}"
 
+xcodegen
+
 # Commit current changes
 git commit -am "Bump CFBundleVersion: ${CURRENT} -> ${NEXT}"
 git tag -a "${TAG}" -m "Release ${SHORT_VER} (${NEW_VAL})"

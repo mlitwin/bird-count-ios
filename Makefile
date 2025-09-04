@@ -56,5 +56,4 @@ fastlane-beta:
 
 prep-beta:
 	@./scripts/bump-build.sh
-	@$(MAKE) generate
 

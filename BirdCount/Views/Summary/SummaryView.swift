@@ -32,7 +32,7 @@ struct SummaryView: View {
                 return nil
             }
         }
-        .sorted { $0.taxon.commonName < $1.taxon.commonName }
+        .sorted { $0.taxon.order < $1.taxon.order }
     }
 
     // Flatten nested observations so filtering happens per node (parent and children)
