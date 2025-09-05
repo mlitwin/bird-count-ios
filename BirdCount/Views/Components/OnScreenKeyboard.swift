@@ -27,9 +27,7 @@ struct OnScreenKeyboard: View {
                         KeyButton(label: key, flex: true, active: active) { onKey(key.lowercased()) }
                     }
                     if r == rows.count - 1 {
-                        // Include action keys in-row so all keys share equal width
                         KeyButton(symbol: "delete.left.fill", flex: true, role: .destructive, active: active) { onBackspace() }
-                        KeyButton(symbol: "xmark.circle", flex: true, active: active) { onClear() }
                     }
                 }
             }
